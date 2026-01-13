@@ -1,0 +1,115 @@
+import React, { useState } from 'react';
+import { WinnerRecord, LayerType } from '../types';
+import { Edit, Check, Trash2, PanelLeft, PanelBottom } from 'lucide-react';
+
+interface WinnersListProps {
+  winners: WinnerRecord[];
+  currentLayer: LayerType;
+  variant?: 'default' | 'sidebar'; // default: fixed height, sidebar: full height
+  onDeleteWinner: (id: string) => void;
+  onTogglePosition?: () => void;
+}
+
+export const WinnersList: React.FC<WinnersListProps> = ({ 
+  winners, 
+  currentLayer, 
+  variant = 'default',
+  onDeleteWinner,
+  onTogglePosition
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Filter winners for the current layer view usually, but displaying all is also good.
+  // Let's filter by current layer to keep context relevant.
+  const layerWinners = winners.filter(w => w.layer === currentLayer).sort((a, b) => b.timestamp - a.timestamp);
+
+  if (layerWinners.length === 0) {
+    return (
+      <div className={`bg-white/90 backdrop-blur rounded-xl p-8 text-center border border-slate-200 text-slate-400 ${variant === 'sidebar' ? 'h-full flex items-center justify-center relative' : 'relative'}`}>
+        {/* Toggle button even when empty */}
+        {onTogglePosition && (
+          <div className="absolute top-2 right-2">
+             <button 
+              onClick={onTogglePosition}
+              className="p-2 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+              title={variant === 'default' ? "切換至左側顯示" : "切換至下方顯示"}
+            >
+              {variant === 'default' ? <PanelLeft className="w-5 h-5" /> : <PanelBottom className="w-5 h-5" />}
+            </button>
+          </div>
+        )}
+        目前本層級尚無得獎名單
+      </div>
+    );
+  }
+
+  return (
+    <div className={`bg-white/90 backdrop-blur rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col ${variant === 'sidebar' ? 'h-full rounded-none border-y-0 border-l-0 border-r' : ''}`}>
+      <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center flex-none">
+        <h3 className="font-bold text-slate-700">本層級得獎名單 ({layerWinners.length})</h3>
+        <div className="flex items-center gap-2">
+          {onTogglePosition && (
+            <button 
+              type="button"
+              onClick={onTogglePosition}
+              className="p-1.5 rounded transition-colors text-slate-400 hover:text-slate-600 hover:bg-slate-200"
+              title={variant === 'default' ? "切換至左側顯示" : "切換至下方顯示"}
+            >
+              {variant === 'default' ? <PanelLeft className="w-4 h-4" /> : <PanelBottom className="w-4 h-4" />}
+            </button>
+          )}
+          <span className="text-xs text-slate-500 bg-slate-200 px-2 py-1 rounded hidden sm:inline-block">最新在前</span>
+          <button 
+            type="button"
+            onClick={() => setIsEditing(!isEditing)}
+            className={`p-1.5 rounded transition-colors ${isEditing ? 'bg-blue-100 text-blue-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'}`}
+            title={isEditing ? "完成編輯" : "編輯名單"}
+          >
+            {isEditing ? <Check className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+      
+      <div className={`overflow-y-auto ${variant === 'default' ? 'max-h-[400px]' : 'flex-1'}`}>
+        <table className="w-full text-left text-sm border-collapse">
+          <thead className="bg-slate-100 text-slate-600 sticky top-0 z-10 shadow-sm">
+            <tr>
+              {isEditing && <th className="p-3 w-16 text-center text-red-500 font-bold">刪除</th>}
+              <th className="p-3">獎項</th>
+              <th className="p-3">獎品</th>
+              <th className="p-3">得獎者</th>
+              <th className={`p-3 ${variant === 'sidebar' ? 'hidden xl:table-cell' : ''}`}>所屬單位</th>
+              <th className={`p-3 ${variant === 'sidebar' ? 'hidden' : ''}`}>分區</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {layerWinners.map((winner) => (
+              <tr key={winner.id} className="hover:bg-slate-50 transition-colors">
+                {isEditing && (
+                  <td className="p-3 text-center align-middle">
+                    <button 
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteWinner(winner.id);
+                      }}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors border border-red-200"
+                      title="刪除此紀錄"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                )}
+                <td className="p-3 font-medium text-amber-600 truncate max-w-[100px]">{winner.prize}</td>
+                <td className="p-3 text-slate-500 truncate max-w-[120px]" title={winner.prizeItem || ''}>{winner.prizeItem || '-'}</td>
+                <td className="p-3 font-bold text-slate-800">{winner.participantName}</td>
+                <td className={`p-3 text-slate-600 truncate max-w-[120px] ${variant === 'sidebar' ? 'hidden xl:table-cell' : ''}`}>{winner.participantClub}</td>
+                <td className={`p-3 text-slate-500 ${variant === 'sidebar' ? 'hidden' : ''}`}>{winner.participantZone}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};

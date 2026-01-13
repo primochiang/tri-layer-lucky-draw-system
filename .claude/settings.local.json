@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(gh auth:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: 三層式抽獎系統\n\n- React 19 + TypeScript + Vite 建構\n- 支援 Layer A（全體）、B（分區）、C（社團）三層抽獎\n- SlotMachine 動畫效果\n- 獎項管理與中獎名單顯示\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}
