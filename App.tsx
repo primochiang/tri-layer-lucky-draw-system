@@ -1,6 +1,13 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { LayerType, Participant, WinnerRecord, PrizeConfig } from './types';
-import { MOCK_PARTICIPANTS, ZONES, getClubs, getClubsByZone } from './constants';
+import {
+  MOCK_PARTICIPANTS,
+  ZONES,
+  getClubs,
+  getFlatClubPrizes,
+  getFlatZonePrizes,
+  getFlatDistrictPrizes
+} from './constants';
 import { LayerSelector } from './components/LayerSelector';
 import { SlotMachine } from './components/SlotMachine';
 import { WinnersList } from './components/WinnersList';
@@ -43,11 +50,8 @@ const App: React.FC = () => {
   const [selectedClub, setSelectedClub] = useState<string>('');
 
   // --- Prize Management State ---
-  const [prizes, setPrizes] = useState<PrizeConfig[]>([
-    { id: 'p1', name: '總監獎', itemName: '最新款智慧型手機', totalCount: 1 },
-    { id: 'p2', name: '分區主席獎', itemName: '65吋 4K 電視', totalCount: 3 },
-    { id: 'p3', name: '幸運獎', itemName: '便利商店禮券 1000元', totalCount: 10 },
-  ]);
+  // Initialize with district prizes for Layer A
+  const [prizes, setPrizes] = useState<PrizeConfig[]>(() => getFlatDistrictPrizes());
   const [selectedPrizeId, setSelectedPrizeId] = useState<string>(''); // Default to empty
   const [drawMode, setDrawMode] = useState<'ONE' | 'ALL' | 'CUSTOM'>('ONE');
   const [customBatchSize, setCustomBatchSize] = useState<number>(1);
@@ -76,12 +80,31 @@ const App: React.FC = () => {
     if (currentLayer === LayerType.A) {
       setCustomTitle('一四五分區 聯合大抽獎');
     } else if (currentLayer === LayerType.B) {
-      setCustomTitle(`第 ${selectedZone} 分區 幸運抽獎`);
+      setCustomTitle(`${selectedZone} 幸運抽獎`);
     } else if (currentLayer === LayerType.C) {
-      setCustomTitle(selectedClub ? `${selectedClub} 幸運抽獎` : '各社抽獎');
+      setCustomTitle(selectedClub ? `${selectedClub}社 幸運抽獎` : '各社抽獎');
     }
-    
+
     // Reset prize selection when layer or context changes
+    setSelectedPrizeId('');
+  }, [currentLayer, selectedZone, selectedClub]);
+
+  // Dynamic Prize Loading based on Layer and Context
+  useEffect(() => {
+    let newPrizes: PrizeConfig[] = [];
+
+    if (currentLayer === LayerType.A) {
+      // Layer A: 第三階段 - 特別獎 (地區長官獎)
+      newPrizes = getFlatDistrictPrizes();
+    } else if (currentLayer === LayerType.B) {
+      // Layer B: 第二階段 - 分區長官獎
+      newPrizes = getFlatZonePrizes(selectedZone);
+    } else if (currentLayer === LayerType.C && selectedClub) {
+      // Layer C: 第一階段 - 社長獎
+      newPrizes = getFlatClubPrizes(selectedClub);
+    }
+
+    setPrizes(newPrizes);
     setSelectedPrizeId('');
   }, [currentLayer, selectedZone, selectedClub]);
 
@@ -332,7 +355,11 @@ const App: React.FC = () => {
           <div className="inline-block relative group animate-fade-in-up">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
             <div className="relative bg-gradient-to-r from-amber-500 to-amber-600 px-12 py-4 rounded-xl shadow-2xl transform transition-transform hover:scale-105 border border-amber-400/30">
-              <div className="text-amber-100 text-sm font-bold uppercase tracking-[0.2em] mb-1">Current Prize</div>
+              {currentPrize.sponsor && (
+                <div className="text-amber-100 text-sm font-bold uppercase tracking-[0.2em] mb-1">
+                  {currentPrize.sponsorTitle} {currentPrize.sponsor} 敬贈
+                </div>
+              )}
               <div className="text-4xl md:text-6xl font-black text-white drop-shadow-md">
                  {currentPrize.name}
               </div>
@@ -630,22 +657,28 @@ const App: React.FC = () => {
               {/* Select Prize */}
               <div>
                 <label className="block text-xs font-semibold text-amber-700 mb-1">選擇獎項</label>
-                <select 
+                <select
                   value={selectedPrizeId}
                   onChange={(e) => setSelectedPrizeId(e.target.value)}
-                  className="w-full p-2.5 bg-white border border-amber-200 rounded-lg text-lg font-bold text-slate-800 focus:ring-2 focus:ring-amber-500 shadow-sm"
+                  className="w-full p-2.5 bg-white border border-amber-200 rounded-lg text-base font-bold text-slate-800 focus:ring-2 focus:ring-amber-500 shadow-sm"
                 >
                   <option value="">-- 請選擇獎項 --</option>
                   {prizes.map(p => (
                     <option key={p.id} value={p.id}>
-                      {p.name} (共 {p.totalCount} 名)
+                      {p.name} - {p.sponsorTitle} {p.sponsor} (共 {p.totalCount} 名)
                     </option>
                   ))}
                 </select>
-                <div className="flex justify-between mt-1 px-1">
-                   <span className="text-xs text-amber-600">剩餘: {remainingPrizeCount}</span>
-                   <span className="text-xs text-amber-600">總數: {currentPrize?.totalCount || 0}</span>
-                </div>
+                {currentPrize && (
+                  <div className="mt-2 p-2 bg-amber-100/50 rounded text-xs text-amber-800">
+                    <div className="font-bold">贊助人：{currentPrize.sponsorTitle} {currentPrize.sponsor}</div>
+                    <div>獎品：{currentPrize.itemName}</div>
+                    <div className="flex justify-between mt-1">
+                      <span>剩餘: {remainingPrizeCount}</span>
+                      <span>總數: {currentPrize.totalCount}</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Draw Mode */}
