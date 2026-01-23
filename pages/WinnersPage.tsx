@@ -40,7 +40,7 @@ export const WinnersPage: React.FC = () => {
   }, [winners, layerFilter, search]);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-900 text-white flex flex-col">
       {/* Header */}
       <header className="flex-none px-4 py-4 bg-slate-800/80 border-b border-slate-700/50">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
@@ -116,22 +116,20 @@ export const WinnersPage: React.FC = () => {
               {/* Mobile: Card layout */}
               <div className="sm:hidden space-y-2">
                 {filtered.map(w => (
-                  <div key={w.id} className="bg-slate-800/60 rounded-lg p-3 border border-slate-700/50">
-                    <div className="flex items-start justify-between mb-1">
-                      <span className="text-amber-400 text-xs font-medium">
-                        {LAYER_LABELS[w.layer]} / {w.prize}
-                      </span>
+                  <div key={w.id} className="bg-slate-800/60 rounded-lg p-3 border border-slate-700/50 overflow-hidden">
+                    <div className="text-amber-400 text-xs font-medium truncate mb-1">
+                      {LAYER_LABELS[w.layer]} / {w.prize}
                     </div>
                     {w.prizeItem && (
-                      <div className="text-slate-400 text-xs mb-1">{w.prizeItem}</div>
+                      <div className="text-slate-400 text-xs truncate mb-1">{w.prizeItem}</div>
                     )}
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-bold text-white">
+                    <div className="flex items-baseline gap-2 min-w-0">
+                      <span className="font-bold text-white shrink-0">
                         {highlightMatch(w.participantName, search)}
                       </span>
                       <span className="text-xs text-slate-400 truncate">{w.participantClub}</span>
                     </div>
-                    <div className="text-xs text-slate-500 mt-1">{w.participantZone}</div>
+                    <div className="text-xs text-slate-500 mt-1 truncate">{w.participantZone}</div>
                   </div>
                 ))}
               </div>
