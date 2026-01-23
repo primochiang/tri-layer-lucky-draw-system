@@ -3,9 +3,9 @@ import { writeFileSync } from 'fs';
 
 // === 參加者名單 ===
 const ZONE_CLUBS = {
-  '第一分區': ['南區', '逸仙', '逸天', '雲聯網', '逸澤', '黃埔', '逸新', '蘭亭鐵馬', '銀河'],
-  '第四分區': ['南欣', '松山', '民生', '松青', '政愛', '添愛', '泰愛', '文化'],
-  '第五分區': ['府門', '南陽', '明星', '風雲'],
+  '第一分區': ['南區社', '逸仙社', '逸天社', '雲聯網社', '逸澤社', '黃埔社', '逸新社', '蘭亭鐵馬社', '銀河社'],
+  '第四分區': ['南欣社', '松山社', '民生社', '松青社', '政愛社', '添愛社', '泰愛社', '文化社'],
+  '第五分區': ['府門社', '南陽社', '明星社', '風雲社'],
 };
 
 const participants = [];
@@ -36,27 +36,27 @@ const prizes = [];
 
 // 第一階段 - 社長獎
 const CLUB_PRIZES = [
-  { zone: '第一分區', club: '南區', sponsor: 'Queenie', name: '社長獎', item: '紅包 $2,000', count: 3 },
-  { zone: '第一分區', club: '逸仙', sponsor: 'Susan', name: '社長獎', item: '紅包 $1,000', count: 3 },
-  { zone: '第一分區', club: '逸天', sponsor: 'Jim', name: '社長獎', item: '紅包 $1,000', count: 1 },
-  { zone: '第一分區', club: '雲聯網', sponsor: 'Jennifer', name: '社長獎', item: '紅包 $1,000', count: 2 },
-  { zone: '第一分區', club: '逸澤', sponsor: 'Andy', name: '社長獎', item: '紅包 $1,000', count: 2 },
-  { zone: '第一分區', club: '黃埔', sponsor: 'Alex', name: '社長獎', item: '禮品一份', count: 1 },
-  { zone: '第一分區', club: '逸新', sponsor: 'Sandy', name: '社長獎', item: '紅包 $1,000', count: 3 },
-  { zone: '第一分區', club: '蘭亭鐵馬', sponsor: 'Wine', name: '社長獎', item: '酒 1 瓶', count: 1 },
-  { zone: '第一分區', club: '銀河', sponsor: '', name: '社長獎', item: '待確認', count: 0 },
-  { zone: '第四分區', club: '南欣', sponsor: 'William', name: '社長獎', item: 'Edenred即享卡 $1,000', count: 2 },
-  { zone: '第四分區', club: '松山', sponsor: 'MB', name: '社長獎', item: '紅包 $1,000', count: 2 },
-  { zone: '第四分區', club: '民生', sponsor: 'Dawson', name: '社長獎', item: '年節禮盒', count: 2 },
-  { zone: '第四分區', club: '松青', sponsor: 'Tony', name: '社長獎', item: '紅包 $1,000', count: 2 },
-  { zone: '第四分區', club: '政愛', sponsor: 'Alex', name: '社長獎', item: '連建興聯名款紅酒', count: 2 },
-  { zone: '第四分區', club: '添愛', sponsor: 'Jerry', name: '社長獎', item: '威士忌酒', count: 2 },
-  { zone: '第四分區', club: '泰愛', sponsor: 'Lian', name: '社長獎', item: '陶板屋套餐 (2張/份)', count: 2 },
-  { zone: '第四分區', club: '文化', sponsor: 'Sky', name: '社長獎', item: '連建興聯名款紅酒', count: 2 },
-  { zone: '第五分區', club: '府門', sponsor: 'Card', name: '社長獎', item: '紅包 $1,500', count: 3 },
-  { zone: '第五分區', club: '南陽', sponsor: 'Michael', name: '社長獎', item: '紅包 $1,500', count: 3 },
-  { zone: '第五分區', club: '明星', sponsor: 'Mandy', name: '社長獎', item: '紅包 $1,500', count: 3 },
-  { zone: '第五分區', club: '風雲', sponsor: 'Reis', name: '社長獎', item: '紅包 $1,500', count: 3 },
+  { zone: '第一分區', club: '南區社', sponsor: 'Queenie', name: '社長獎', item: '紅包 $2,000', count: 3 },
+  { zone: '第一分區', club: '逸仙社', sponsor: 'Susan', name: '社長獎', item: '紅包 $1,000', count: 3 },
+  { zone: '第一分區', club: '逸天社', sponsor: 'Jim', name: '社長獎', item: '紅包 $1,000', count: 1 },
+  { zone: '第一分區', club: '雲聯網社', sponsor: 'Jennifer', name: '社長獎', item: '紅包 $1,000', count: 2 },
+  { zone: '第一分區', club: '逸澤社', sponsor: 'Andy', name: '社長獎', item: '紅包 $1,000', count: 2 },
+  { zone: '第一分區', club: '黃埔社', sponsor: 'Alex', name: '社長獎', item: '禮品一份', count: 1 },
+  { zone: '第一分區', club: '逸新社', sponsor: 'Sandy', name: '社長獎', item: '紅包 $1,000', count: 3 },
+  { zone: '第一分區', club: '蘭亭鐵馬社', sponsor: 'Wine', name: '社長獎', item: '酒 1 瓶', count: 1 },
+  { zone: '第一分區', club: '銀河社', sponsor: '', name: '社長獎', item: '待確認', count: 0 },
+  { zone: '第四分區', club: '南欣社', sponsor: 'William', name: '社長獎', item: 'Edenred即享卡 $1,000', count: 2 },
+  { zone: '第四分區', club: '松山社', sponsor: 'MB', name: '社長獎', item: '紅包 $1,000', count: 2 },
+  { zone: '第四分區', club: '民生社', sponsor: 'Dawson', name: '社長獎', item: '年節禮盒', count: 2 },
+  { zone: '第四分區', club: '松青社', sponsor: 'Tony', name: '社長獎', item: '紅包 $1,000', count: 2 },
+  { zone: '第四分區', club: '政愛社', sponsor: 'Alex', name: '社長獎', item: '連建興聯名款紅酒', count: 2 },
+  { zone: '第四分區', club: '添愛社', sponsor: 'Jerry', name: '社長獎', item: '威士忌酒', count: 2 },
+  { zone: '第四分區', club: '泰愛社', sponsor: 'Lian', name: '社長獎', item: '陶板屋套餐 (2張/份)', count: 2 },
+  { zone: '第四分區', club: '文化社', sponsor: 'Sky', name: '社長獎', item: '連建興聯名款紅酒', count: 2 },
+  { zone: '第五分區', club: '府門社', sponsor: 'Card', name: '社長獎', item: '紅包 $1,500', count: 3 },
+  { zone: '第五分區', club: '南陽社', sponsor: 'Michael', name: '社長獎', item: '紅包 $1,500', count: 3 },
+  { zone: '第五分區', club: '明星社', sponsor: 'Mandy', name: '社長獎', item: '紅包 $1,500', count: 3 },
+  { zone: '第五分區', club: '風雲社', sponsor: 'Reis', name: '社長獎', item: '紅包 $1,500', count: 3 },
 ];
 
 for (const p of CLUB_PRIZES) {
