@@ -67,7 +67,7 @@ export const AudiencePage: React.FC = () => {
   // Nickname entry screen
   if (!isNicknameSet) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen max-w-[100vw] overflow-x-hidden bg-slate-900 flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <MessageSquare className="w-12 h-12 text-amber-400 mx-auto mb-4" />
@@ -102,16 +102,16 @@ export const AudiencePage: React.FC = () => {
   const recentMessages = messages.slice(-20);
 
   return (
-    <div className="h-screen bg-slate-900 flex flex-col">
+    <div className="h-screen max-w-[100vw] overflow-x-hidden bg-slate-900 flex flex-col">
       {/* Header */}
-      <header className="flex-none px-4 py-3 bg-slate-800/80 border-b border-slate-700/50 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <header className="flex-none px-4 py-3 bg-slate-800/80 border-b border-slate-700/50 flex items-center justify-between min-w-0 max-w-full">
+        <div className="flex items-center gap-2 shrink-0">
           <MessageSquare className="w-5 h-5 text-amber-400" />
           <span className="text-white font-bold text-sm">現場互動留言</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
-          <span className="text-slate-400 text-xs">{nickname}</span>
+        <div className="flex items-center gap-2 min-w-0">
+          <span className={`w-2 h-2 rounded-full shrink-0 ${isConnected ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
+          <span className="text-slate-400 text-xs truncate">{nickname}</span>
           <button
             onClick={() => {
               localStorage.removeItem('audience_nickname');
@@ -156,7 +156,7 @@ export const AudiencePage: React.FC = () => {
 
       {/* Input */}
       <div className="flex-none p-3 border-t border-slate-700/50 bg-slate-800/50">
-        <div className="flex gap-2">
+        <div className="flex gap-2 min-w-0 max-w-full">
           <input
             type="text"
             value={content}
@@ -164,13 +164,13 @@ export const AudiencePage: React.FC = () => {
             onKeyDown={handleKeyDown}
             placeholder={isCooling ? `${remainingSeconds}秒後可再發送...` : '輸入留言內容...'}
             disabled={isCooling}
-            className="flex-1 px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm disabled:opacity-50"
+            className="flex-1 min-w-0 px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm disabled:opacity-50"
             maxLength={100}
           />
           <button
             onClick={handleSend}
             disabled={!content.trim() || isCooling}
-            className="px-4 py-2.5 bg-amber-500 text-slate-900 font-bold rounded-xl hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+            className="shrink-0 px-4 py-2.5 bg-amber-500 text-slate-900 font-bold rounded-xl hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
           >
             <Send className="w-4 h-4" />
           </button>
