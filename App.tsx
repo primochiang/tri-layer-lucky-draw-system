@@ -66,7 +66,7 @@ const App: React.FC = () => {
 
   // --- Presentation State ---
   const [customTitle, setCustomTitle] = useState<string>('');
-  const [customSlogan, setCustomSlogan] = useState<string>('熱情 • 服務 • 創新 • 榮耀');
+  const [customSlogan, setCustomSlogan] = useState<string>('');
   const [customImage, setCustomImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -86,9 +86,9 @@ const App: React.FC = () => {
     if (currentLayer === LayerType.A) {
       setCustomTitle('一四五分區 聯合大抽獎');
     } else if (currentLayer === LayerType.B) {
-      setCustomTitle(`${selectedZone} 幸運抽獎`);
+      setCustomTitle(selectedZone);
     } else if (currentLayer === LayerType.C) {
-      setCustomTitle(selectedClub ? `${selectedClub}社 幸運抽獎` : '各社抽獎');
+      setCustomTitle(selectedClub || '');
     }
 
     // Reset prize selection when layer or context changes
