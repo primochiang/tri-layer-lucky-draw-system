@@ -38,3 +38,21 @@ export interface DrawConfig {
   prizeName: string;
   count: number;
 }
+
+export interface ImportResult<T> {
+  success: boolean;
+  data: T;
+  errors: ImportError[];
+}
+
+export interface ImportError {
+  row: number;
+  column: string;
+  message: string;
+}
+
+export interface ParsedPrizeData {
+  clubPrizes: import('./prizes').ClubPrizeConfig[];
+  zonePrizes: import('./prizes').ZonePrizeConfig[];
+  districtPrizes: import('./prizes').DistrictPrizeConfig[];
+}

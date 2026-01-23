@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { LayerType, Participant, WinnerRecord, PrizeConfig } from './types';
+import { LayerType, Participant, WinnerRecord, PrizeConfig, ParsedPrizeData } from './types';
 import {
   MOCK_PARTICIPANTS,
   ZONES,
+  ZONE_CLUBS,
   getClubs,
   getFlatClubPrizes,
   getFlatZonePrizes,
@@ -12,11 +13,13 @@ import { LayerSelector } from './components/LayerSelector';
 import { SlotMachine } from './components/SlotMachine';
 import { WinnersList } from './components/WinnersList';
 import { Modal } from './components/Modal';
-import { DanmakuSidebar } from './components/DanmakuSidebar'; // Import Danmaku
+import { DanmakuSidebar } from './components/DanmakuSidebar';
+import { ImportPanel } from './components/ImportPanel';
 import { getEligibleParticipants, drawWinners } from './services/lotteryService';
+import { buildPrizeGetters } from './services/importService';
 import confetti from 'canvas-confetti';
-import { 
-  Trash2, Settings, Play, X, Menu, Image as ImageIcon, 
+import {
+  Trash2, Settings, Play, X, Menu, Image as ImageIcon,
   Type, Monitor, ChevronRight, Award, Plus, Minus,
   Maximize, Minimize, LayoutTemplate, AlignVerticalJustifyCenter, AlignHorizontalJustifyStart,
   MessageSquare
@@ -24,9 +27,11 @@ import {
 
 const App: React.FC = () => {
   // --- Core State ---
-  const [participants] = useState<Participant[]>(MOCK_PARTICIPANTS);
+  const [participants, setParticipants] = useState<Participant[]>(MOCK_PARTICIPANTS);
   const [winners, setWinners] = useState<WinnerRecord[]>([]);
   const [currentLayer, setCurrentLayer] = useState<LayerType>(LayerType.A);
+  const [importedPrizeData, setImportedPrizeData] = useState<ParsedPrizeData | null>(null);
+  const [zoneClubs, setZoneClubs] = useState<Record<string, string[]>>(ZONE_CLUBS);
   
   // UI State
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(true);
@@ -46,6 +51,7 @@ const App: React.FC = () => {
   const [winnersPosition, setWinnersPosition] = useState<'BOTTOM' | 'LEFT'>('BOTTOM');
 
   // Filter States
+  const zones = useMemo(() => Object.keys(zoneClubs), [zoneClubs]);
   const [selectedZone, setSelectedZone] = useState<string>(ZONES[0]);
   const [selectedClub, setSelectedClub] = useState<string>('');
 
@@ -93,20 +99,35 @@ const App: React.FC = () => {
   useEffect(() => {
     let newPrizes: PrizeConfig[] = [];
 
-    if (currentLayer === LayerType.A) {
-      // Layer A: 第三階段 - 特別獎 (地區長官獎)
-      newPrizes = getFlatDistrictPrizes();
-    } else if (currentLayer === LayerType.B) {
-      // Layer B: 第二階段 - 分區長官獎
-      newPrizes = getFlatZonePrizes(selectedZone);
-    } else if (currentLayer === LayerType.C && selectedClub) {
-      // Layer C: 第一階段 - 社長獎
-      newPrizes = getFlatClubPrizes(selectedClub);
+    if (importedPrizeData) {
+      const getters = buildPrizeGetters(importedPrizeData);
+      if (currentLayer === LayerType.A) {
+        newPrizes = getters.getFlatDistrictPrizes();
+      } else if (currentLayer === LayerType.B) {
+        newPrizes = getters.getFlatZonePrizes(selectedZone);
+      } else if (currentLayer === LayerType.C && selectedClub) {
+        newPrizes = getters.getFlatClubPrizes(selectedClub);
+      }
+    } else {
+      if (currentLayer === LayerType.A) {
+        newPrizes = getFlatDistrictPrizes();
+      } else if (currentLayer === LayerType.B) {
+        newPrizes = getFlatZonePrizes(selectedZone);
+      } else if (currentLayer === LayerType.C && selectedClub) {
+        newPrizes = getFlatClubPrizes(selectedClub);
+      }
     }
 
     setPrizes(newPrizes);
     setSelectedPrizeId('');
-  }, [currentLayer, selectedZone, selectedClub]);
+  }, [currentLayer, selectedZone, selectedClub, importedPrizeData]);
+
+  // Update selectedZone when zones change (e.g. after import)
+  useEffect(() => {
+    if (zones.length > 0 && !zones.includes(selectedZone)) {
+      setSelectedZone(zones[0]);
+    }
+  }, [zones, selectedZone]);
 
   // Init Club selection
   useEffect(() => {
@@ -293,6 +314,29 @@ const App: React.FC = () => {
   const removeImage = () => {
     setCustomImage(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // Import Handlers
+  const handleParticipantsImported = (newParticipants: Participant[], newZoneClubs: Record<string, string[]>) => {
+    setParticipants(newParticipants);
+    setZoneClubs(newZoneClubs);
+    setWinners([]); // Clear winners since participant IDs may change
+    const newZones = Object.keys(newZoneClubs);
+    if (newZones.length > 0) setSelectedZone(newZones[0]);
+    setSelectedClub('');
+  };
+
+  const handlePrizesImported = (data: ParsedPrizeData) => {
+    setImportedPrizeData(data);
+  };
+
+  const handleResetToDefaults = () => {
+    setParticipants(MOCK_PARTICIPANTS);
+    setZoneClubs(ZONE_CLUBS);
+    setImportedPrizeData(null);
+    setWinners([]);
+    setSelectedZone(ZONES[0]);
+    setSelectedClub('');
   };
 
   // Prize Management Handlers
@@ -565,7 +609,14 @@ const App: React.FC = () => {
 
         {/* Sidebar Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
-          
+
+          {/* 0. Import Panel */}
+          <ImportPanel
+            onParticipantsImported={handleParticipantsImported}
+            onPrizesImported={handlePrizesImported}
+            onResetToDefaults={handleResetToDefaults}
+          />
+
           {/* 1. Layer Selection */}
           <section>
             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">抽獎層級 & 範圍</h3>
@@ -581,12 +632,12 @@ const App: React.FC = () => {
                   </div>
                 )}
                 {currentLayer === LayerType.B && (
-                  <select 
-                    value={selectedZone} 
+                  <select
+                    value={selectedZone}
                     onChange={(e) => setSelectedZone(e.target.value)}
                     className="w-full p-2 bg-white border border-slate-200 rounded text-sm"
                   >
-                    {ZONES.map(z => <option key={z} value={z}>第 {z} 分區</option>)}
+                    {zones.map(z => <option key={z} value={z}>{z}</option>)}
                   </select>
                 )}
                 {currentLayer === LayerType.C && (
