@@ -18,17 +18,23 @@ import { ImportPanel } from './components/ImportPanel';
 import { getEligibleParticipants, drawWinners } from './services/lotteryService';
 import { buildPrizeGetters } from './services/importService';
 import confetti from 'canvas-confetti';
+import * as XLSX from 'xlsx';
 import {
   Trash2, Settings, Play, X, Menu, Image as ImageIcon,
   Type, Monitor, ChevronRight, Award, Plus, Minus,
   Maximize, Minimize, LayoutTemplate, AlignVerticalJustifyCenter, AlignHorizontalJustifyStart,
-  MessageSquare
+  MessageSquare, Download
 } from 'lucide-react';
 
 const App: React.FC = () => {
   // --- Core State ---
   const [participants, setParticipants] = useState<Participant[]>(MOCK_PARTICIPANTS);
-  const [winners, setWinners] = useState<WinnerRecord[]>([]);
+  const [winners, setWinners] = useState<WinnerRecord[]>(() => {
+    try {
+      const saved = localStorage.getItem('lotteryWinners');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [currentLayer, setCurrentLayer] = useState<LayerType>(LayerType.A);
   const [importedPrizeData, setImportedPrizeData] = useState<ParsedPrizeData | null>(null);
   const [zoneClubs, setZoneClubs] = useState<Record<string, string[]>>(ZONE_CLUBS);
@@ -71,7 +77,12 @@ const App: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // --- Effects ---
-  
+
+  // Persist winners to localStorage
+  useEffect(() => {
+    localStorage.setItem('lotteryWinners', JSON.stringify(winners));
+  }, [winners]);
+
   // Fullscreen listener
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -84,7 +95,7 @@ const App: React.FC = () => {
   // Auto-update Title based on context AND Reset Prize Selection
   useEffect(() => {
     if (currentLayer === LayerType.A) {
-      setCustomTitle('一四五分區 聯合大抽獎');
+      setCustomTitle('3523地區');
     } else if (currentLayer === LayerType.B) {
       setCustomTitle(selectedZone);
     } else if (currentLayer === LayerType.C) {
@@ -146,6 +157,9 @@ const App: React.FC = () => {
   const prizeWinnersCount = useMemo(() => {
     if (!currentPrize) return 0;
     return winners.filter(w => {
+      // New records have prizeId, match directly
+      if (w.prizeId) return w.prizeId === currentPrize.id;
+      // Legacy records without prizeId: match by name + layer + context
       if (w.layer !== currentLayer || w.prize !== currentPrize.name) return false;
       if (currentLayer === LayerType.B && w.context !== selectedZone) return false;
       if (currentLayer === LayerType.C && w.context !== selectedClub) return false;
@@ -253,7 +267,8 @@ const App: React.FC = () => {
       participantZone: p.zone,
       layer: currentLayer,
       prize: currentPrize?.name || '未知獎項',
-      prizeItem: currentPrize?.itemName || '', // Added detailed item name
+      prizeId: currentPrize?.id || '',
+      prizeItem: currentPrize?.itemName || '',
       timestamp: Date.now(),
       context: currentLayer === LayerType.A ? '全體' : filterValue || '未知'
     }));
@@ -275,6 +290,8 @@ const App: React.FC = () => {
       '重新抽獎',
       `確定要清除「${currentPrize.name}」的所有得獎紀錄並重新抽獎嗎？`,
       () => setWinners(prev => prev.filter(w => {
+        if (w.prizeId) return w.prizeId !== currentPrize.id;
+        // Legacy: match by name + layer + context
         if (w.layer !== currentLayer || w.prize !== currentPrize.name) return true;
         if (currentLayer === LayerType.B && w.context !== selectedZone) return true;
         if (currentLayer === LayerType.C && w.context !== selectedClub) return true;
@@ -357,6 +374,35 @@ const App: React.FC = () => {
     setWinners([]);
     setSelectedZone(ZONES[0]);
     setSelectedClub('');
+  };
+
+  // Export Winners to Excel
+  const handleExportWinners = () => {
+    if (winners.length === 0) {
+      showModal('alert', '提醒', '目前尚無中獎紀錄可匯出');
+      return;
+    }
+
+    const layerLabel = (layer: LayerType) => {
+      if (layer === LayerType.A) return '全體抽獎';
+      if (layer === LayerType.B) return '分區抽獎';
+      return '社團抽獎';
+    };
+
+    const rows = winners.map(w => ({
+      '層級': layerLabel(w.layer),
+      '範圍': w.context,
+      '獎項': w.prize,
+      '獎品': w.prizeItem || '',
+      '中獎人': w.participantName,
+      '所屬社團': w.participantClub,
+      '所屬分區': w.participantZone,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '中獎名單');
+    XLSX.writeFile(wb, `中獎名單_${new Date().toLocaleDateString('zh-TW').replace(/\//g, '')}.xlsx`);
   };
 
   // Prize Management Handlers
@@ -906,8 +952,15 @@ const App: React.FC = () => {
           </section>
 
            {/* Footer Tools */}
-           <div className="pt-6 border-t border-slate-200">
-             <button 
+           <div className="pt-6 border-t border-slate-200 space-y-2">
+             <button
+                onClick={handleExportWinners}
+                className="w-full py-3 text-emerald-700 hover:bg-emerald-50 rounded-lg flex items-center justify-center transition-colors font-medium text-sm"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                下載中獎名單 (Excel)
+              </button>
+             <button
                 onClick={handleResetLayer}
                 className="w-full py-3 text-red-600 hover:bg-red-50 rounded-lg flex items-center justify-center transition-colors font-medium text-sm"
               >

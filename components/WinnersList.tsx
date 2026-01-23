@@ -71,44 +71,70 @@ export const WinnersList: React.FC<WinnersListProps> = ({
       </div>
       
       <div className={`overflow-y-auto ${variant === 'default' ? 'max-h-[400px]' : 'flex-1'}`}>
-        <table className="w-full text-left text-sm border-collapse">
-          <thead className="bg-slate-100 text-slate-600 sticky top-0 z-10 shadow-sm">
-            <tr>
-              {isEditing && <th className="p-3 w-16 text-center text-red-500 font-bold">刪除</th>}
-              <th className="p-3">獎項</th>
-              <th className="p-3">獎品</th>
-              <th className="p-3">得獎者</th>
-              <th className={`p-3 ${variant === 'sidebar' ? 'hidden xl:table-cell' : ''}`}>所屬單位</th>
-              <th className={`p-3 ${variant === 'sidebar' ? 'hidden' : ''}`}>分區</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
+        {variant === 'sidebar' ? (
+          <div className="divide-y divide-slate-100 px-3 py-1">
             {layerWinners.map((winner) => (
-              <tr key={winner.id} className="hover:bg-slate-50 transition-colors">
+              <div key={winner.id} className="py-2 flex items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs text-amber-600 font-medium truncate">{winner.prize}{winner.prizeItem ? ` - ${winner.prizeItem}` : ''}</div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-sm font-bold text-slate-800">{winner.participantName}</span>
+                    <span className="text-xs text-slate-400 truncate">{winner.participantClub}</span>
+                  </div>
+                </div>
                 {isEditing && (
-                  <td className="p-3 text-center align-middle">
-                    <button 
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteWinner(winner.id);
-                      }}
-                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors border border-red-200"
-                      title="刪除此紀錄"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
+                  <button
+                    type="button"
+                    onClick={() => onDeleteWinner(winner.id)}
+                    className="flex-none mt-1 p-1.5 rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors"
+                    title="刪除此紀錄"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 )}
-                <td className="p-3 font-medium text-amber-600 truncate max-w-[100px]">{winner.prize}</td>
-                <td className="p-3 text-slate-500 truncate max-w-[120px]" title={winner.prizeItem || ''}>{winner.prizeItem || '-'}</td>
-                <td className="p-3 font-bold text-slate-800">{winner.participantName}</td>
-                <td className={`p-3 text-slate-600 truncate max-w-[120px] ${variant === 'sidebar' ? 'hidden xl:table-cell' : ''}`}>{winner.participantClub}</td>
-                <td className={`p-3 text-slate-500 ${variant === 'sidebar' ? 'hidden' : ''}`}>{winner.participantZone}</td>
-              </tr>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        ) : (
+          <table className="w-full text-left text-sm border-collapse">
+            <thead className="bg-slate-100 text-slate-600 sticky top-0 z-10 shadow-sm">
+              <tr>
+                {isEditing && <th className="p-3 w-16 text-center text-red-500 font-bold">刪除</th>}
+                <th className="p-3">獎項</th>
+                <th className="p-3">獎品</th>
+                <th className="p-3">得獎者</th>
+                <th className="p-3">所屬單位</th>
+                <th className="p-3">分區</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {layerWinners.map((winner) => (
+                <tr key={winner.id} className="hover:bg-slate-50 transition-colors">
+                  {isEditing && (
+                    <td className="p-3 text-center align-middle">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteWinner(winner.id);
+                        }}
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors border border-red-200"
+                        title="刪除此紀錄"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
+                  <td className="p-3 font-medium text-amber-600 truncate max-w-[100px]">{winner.prize}</td>
+                  <td className="p-3 text-slate-500 truncate max-w-[120px]" title={winner.prizeItem || ''}>{winner.prizeItem || '-'}</td>
+                  <td className="p-3 font-bold text-slate-800">{winner.participantName}</td>
+                  <td className="p-3 text-slate-600 truncate max-w-[120px]">{winner.participantClub}</td>
+                  <td className="p-3 text-slate-500">{winner.participantZone}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

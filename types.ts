@@ -20,6 +20,7 @@ export interface WinnerRecord {
   participantZone: string;
   layer: LayerType;
   prize: string;
+  prizeId: string; // Unique prize ID to distinguish same-named prizes
   prizeItem?: string; // New field for detailed item name (e.g., "iPhone 15")
   timestamp: number;
   context: string; // e.g., "Zone 1" or "Taipei Club" or "All"
