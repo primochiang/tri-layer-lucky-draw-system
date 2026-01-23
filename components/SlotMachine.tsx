@@ -71,7 +71,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      <div className={`grid ${getGridClass(drawCount)} gap-4`}>
+      <div className={`grid ${getGridClass(displayNames.length)} gap-4`}>
         {displayNames.map((name, index) => (
           <div
             key={index}
@@ -81,7 +81,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
                 : 'bg-white border-amber-400'
             }`}
           >
-            <span className={`font-bold text-slate-800 ${drawCount > 5 ? 'text-xl' : 'text-3xl'} truncate`}>
+            <span className={`font-bold text-slate-800 ${displayNames.length > 5 ? 'text-xl' : 'text-3xl'} truncate`}>
               {name}
             </span>
           </div>
