@@ -102,7 +102,7 @@ export const AudiencePage: React.FC = () => {
   const recentMessages = messages.slice(-20);
 
   return (
-    <div className="h-screen max-w-[100vw] overflow-x-hidden bg-slate-900 flex flex-col">
+    <div className="fixed inset-0 bg-slate-900 flex flex-col overflow-hidden">
       {/* Header */}
       <header className="flex-none px-4 py-3 bg-slate-800/80 border-b border-slate-700/50 flex items-center justify-between min-w-0 max-w-full">
         <div className="flex items-center gap-2 shrink-0">

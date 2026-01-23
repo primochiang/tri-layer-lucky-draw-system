@@ -33,11 +33,11 @@ export function useMessages() {
         (payload) => {
           const newMsg = payload.new as Message;
           setMessages(prev => {
+            if (prev.some(m => m.id === newMsg.id)) return prev;
             const updated = [...prev, newMsg];
-            if (updated.length > MAX_MESSAGES) {
-              return updated.slice(updated.length - MAX_MESSAGES);
-            }
-            return updated;
+            return updated.length > MAX_MESSAGES
+              ? updated.slice(updated.length - MAX_MESSAGES)
+              : updated;
           });
         }
       )
@@ -52,9 +52,20 @@ export function useMessages() {
 
   const sendMessage = useCallback(async (nickname: string, content: string) => {
     if (!supabase) return false;
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('messages')
-      .insert({ nickname, content });
+      .insert({ nickname, content })
+      .select()
+      .single();
+    if (!error && data) {
+      setMessages(prev => {
+        if (prev.some(m => m.id === data.id)) return prev;
+        const updated = [...prev, data as Message];
+        return updated.length > MAX_MESSAGES
+          ? updated.slice(updated.length - MAX_MESSAGES)
+          : updated;
+      });
+    }
     return !error;
   }, []);
 
