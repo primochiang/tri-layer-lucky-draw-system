@@ -57,5 +57,16 @@ export function useMessages() {
     return !error;
   }, []);
 
-  return { messages, isConnected, sendMessage };
+  const clearMessages = useCallback(async () => {
+    const { error } = await supabase
+      .from('messages')
+      .delete()
+      .gte('id', '00000000-0000-0000-0000-000000000000');
+    if (!error) {
+      setMessages([]);
+    }
+    return !error;
+  }, []);
+
+  return { messages, isConnected, sendMessage, clearMessages };
 }

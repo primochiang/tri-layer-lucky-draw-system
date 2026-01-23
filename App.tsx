@@ -46,7 +46,7 @@ const App: React.FC = () => {
   const [danmakuMode, setDanmakuMode] = useState<'off' | 'sidebar' | 'overlay'>('off');
 
   // Real-time messages
-  const { messages, isConnected } = useMessages();
+  const { messages, isConnected, clearMessages } = useMessages();
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   
   // Modal State
@@ -658,6 +658,7 @@ const App: React.FC = () => {
                messages={messages}
                isConnected={isConnected}
                onClose={() => setDanmakuMode('off')}
+               onClear={clearMessages}
              />
            </div>
         )}

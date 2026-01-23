@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { X, MessageSquare } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { X, MessageSquare, Trash2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import type { Message } from '../types';
 
@@ -7,6 +7,7 @@ interface DanmakuSidebarProps {
   messages: Message[];
   isConnected: boolean;
   onClose: () => void;
+  onClear: () => Promise<boolean>;
 }
 
 const NICKNAME_COLORS = [
@@ -23,8 +24,16 @@ function getNicknameColor(nickname: string): string {
   return NICKNAME_COLORS[Math.abs(hash) % NICKNAME_COLORS.length];
 }
 
-export const DanmakuSidebar: React.FC<DanmakuSidebarProps> = ({ messages, isConnected, onClose }) => {
+export const DanmakuSidebar: React.FC<DanmakuSidebarProps> = ({ messages, isConnected, onClose, onClear }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [clearing, setClearing] = useState(false);
+
+  const handleClear = async () => {
+    if (!confirm('確定要清除所有留言嗎？')) return;
+    setClearing(true);
+    await onClear();
+    setClearing(false);
+  };
 
   // Auto scroll to bottom on new messages
   useEffect(() => {
@@ -43,13 +52,23 @@ export const DanmakuSidebar: React.FC<DanmakuSidebarProps> = ({ messages, isConn
           <MessageSquare className="w-5 h-5 text-amber-400" />
           現場互動留言
         </h2>
-        <button
-          onClick={onClose}
-          className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-full transition-colors"
-          title="關閉留言區"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleClear}
+            disabled={clearing || messages.length === 0}
+            className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-900/30 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            title="清除所有留言"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onClose}
+            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-full transition-colors"
+            title="關閉留言區"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* QR Code Section */}
