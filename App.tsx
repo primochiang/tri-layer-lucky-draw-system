@@ -414,11 +414,11 @@ const App: React.FC = () => {
             <div className="absolute inset-0 top-12 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
             <div className="relative bg-gradient-to-r from-amber-500 to-amber-600 px-12 py-4 rounded-xl shadow-2xl transform transition-transform hover:scale-105 border border-amber-400/30">
               {currentPrize.sponsor && (
-                <div className="text-white text-xl md:text-2xl font-bold mb-1">
+                <div className="text-3xl font-bold text-white mb-1">
                   {currentPrize.sponsorTitle} {currentPrize.sponsor}
                 </div>
               )}
-              <div className="text-3xl md:text-5xl font-black text-white drop-shadow-md">
+              <div className="text-4xl font-black text-white drop-shadow-md">
                  {currentPrize.itemName || currentPrize.name}
               </div>
               <div className="mt-2 text-amber-100 text-xl md:text-2xl font-semibold">

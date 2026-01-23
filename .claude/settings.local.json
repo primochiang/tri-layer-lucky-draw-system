@@ -16,7 +16,12 @@
       "Bash(textutil:*)",
       "Bash(npx tsc:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(file:*)",
+      "Bash(ls:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(node scripts/exportData.mjs:*)"
     ]
   }
 }
