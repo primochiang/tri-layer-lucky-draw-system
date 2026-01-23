@@ -98,8 +98,7 @@ export const WinnersList: React.FC<WinnersListProps> = ({
         <div className={`bg-amber-50 border-b border-amber-100 flex items-center justify-center flex-none ${variant === 'sidebar' ? 'flex-col gap-2 p-3' : 'flex-row gap-4 p-4'}`}>
           <QRCodeSVG value={winnersUrl} size={variant === 'sidebar' ? 80 : 96} bgColor="#fffbeb" fgColor="#1e293b" />
           <div className={`text-amber-800 ${variant === 'sidebar' ? 'text-center text-xs' : 'text-sm'}`}>
-            <div className="font-bold mb-1">掃碼查詢中獎名單</div>
-            <div className="text-xs text-amber-600 break-all">{winnersUrl}</div>
+            <div className="font-bold">掃碼查詢中獎名單</div>
           </div>
         </div>
       )}
