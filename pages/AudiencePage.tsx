@@ -3,6 +3,28 @@ import { Send, MessageSquare } from 'lucide-react';
 import { useMessages } from '../hooks/useMessages';
 import { useThrottle } from '../hooks/useThrottle';
 
+function useVisualViewportHeight() {
+  const [height, setHeight] = useState(window.visualViewport?.height || window.innerHeight);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const handleResize = () => {
+      setHeight(vv.height);
+    };
+
+    vv.addEventListener('resize', handleResize);
+    vv.addEventListener('scroll', handleResize);
+    return () => {
+      vv.removeEventListener('resize', handleResize);
+      vv.removeEventListener('scroll', handleResize);
+    };
+  }, []);
+
+  return height;
+}
+
 const NICKNAME_COLORS = [
   'text-pink-400', 'text-amber-400', 'text-blue-400',
   'text-emerald-400', 'text-purple-400', 'text-rose-400',
@@ -29,6 +51,7 @@ export const AudiencePage: React.FC = () => {
   const { messages, isConnected, sendMessage } = useMessages();
   const { canProceed, markSent, remainingSeconds, isCooling } = useThrottle();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const viewportHeight = useVisualViewportHeight();
 
   // Auto scroll on new messages
   useEffect(() => {
@@ -102,7 +125,10 @@ export const AudiencePage: React.FC = () => {
   const recentMessages = messages.slice(-20);
 
   return (
-    <div className="fixed inset-0 bg-slate-900 flex flex-col overflow-hidden">
+    <div
+      className="w-full bg-slate-900 flex flex-col overflow-hidden"
+      style={{ height: `${viewportHeight}px` }}
+    >
       {/* Header */}
       <header className="flex-none px-4 py-3 bg-slate-800/80 border-b border-slate-700/50 flex items-center justify-between min-w-0 max-w-full">
         <div className="flex items-center gap-2 shrink-0">
@@ -164,7 +190,7 @@ export const AudiencePage: React.FC = () => {
             onKeyDown={handleKeyDown}
             placeholder={isCooling ? `${remainingSeconds}秒後可再發送...` : '輸入留言內容...'}
             disabled={isCooling}
-            className="flex-1 min-w-0 px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm disabled:opacity-50"
+            className="flex-1 min-w-0 px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 text-base disabled:opacity-50"
             maxLength={100}
           />
           <button
