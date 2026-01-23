@@ -19,7 +19,7 @@ export const WinnersList: React.FC<WinnersListProps> = ({
   onTogglePosition
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [showQr, setShowQr] = useState(false);
+  const [showQr, setShowQr] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const winnersUrl = `${window.location.origin}/winners`;
 
