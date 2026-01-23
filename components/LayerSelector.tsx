@@ -9,9 +9,9 @@ interface LayerSelectorProps {
 
 export const LayerSelector: React.FC<LayerSelectorProps> = ({ currentLayer, setLayer, vertical = false }) => {
   const layers = [
-    { id: LayerType.A, label: '活動 A', desc: '全體大抽獎' },
-    { id: LayerType.B, label: '活動 B', desc: '分區抽獎 (1,4,5)' },
-    { id: LayerType.C, label: '活動 C', desc: '各社社員抽獎' },
+    { id: LayerType.C, label: '第一階段', desc: '社團抽獎' },
+    { id: LayerType.B, label: '第二階段', desc: '分區抽獎' },
+    { id: LayerType.A, label: '第三階段', desc: '全體抽獎' },
   ];
 
   return (

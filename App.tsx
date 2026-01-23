@@ -145,8 +145,13 @@ const App: React.FC = () => {
 
   const prizeWinnersCount = useMemo(() => {
     if (!currentPrize) return 0;
-    return winners.filter(w => w.prize === currentPrize.name && w.layer === currentLayer).length;
-  }, [winners, currentPrize, currentLayer]);
+    return winners.filter(w => {
+      if (w.layer !== currentLayer || w.prize !== currentPrize.name) return false;
+      if (currentLayer === LayerType.B && w.context !== selectedZone) return false;
+      if (currentLayer === LayerType.C && w.context !== selectedClub) return false;
+      return true;
+    }).length;
+  }, [winners, currentPrize, currentLayer, selectedZone, selectedClub]);
 
   const remainingPrizeCount = currentPrize 
     ? Math.max(0, currentPrize.totalCount - prizeWinnersCount)
@@ -261,6 +266,21 @@ const App: React.FC = () => {
       origin: { y: 0.6 },
       colors: ['#fbbf24', '#ef4444', '#3b82f6', '#ffffff']
     });
+  };
+
+  const handleRedraw = () => {
+    if (!currentPrize) return;
+    showModal(
+      'confirm',
+      '重新抽獎',
+      `確定要清除「${currentPrize.name}」的所有得獎紀錄並重新抽獎嗎？`,
+      () => setWinners(prev => prev.filter(w => {
+        if (w.layer !== currentLayer || w.prize !== currentPrize.name) return true;
+        if (currentLayer === LayerType.B && w.context !== selectedZone) return true;
+        if (currentLayer === LayerType.C && w.context !== selectedClub) return true;
+        return false;
+      }))
+    );
   };
 
   const handleAddBonus = () => {
@@ -431,27 +451,25 @@ const App: React.FC = () => {
         {!isDrawing ? (
           <>
             {/* Standard Draw / Sold Out Button */}
-            <button 
-              onClick={handleStartDraw}
-              disabled={!currentPrize || eligibleCandidates.length === 0 || remainingPrizeCount === 0}
-              className={`group relative inline-flex items-center justify-center px-8 py-4 text-2xl font-bold text-white transition-all duration-200 rounded-full focus:outline-none shadow-lg
-                ${remainingPrizeCount === 0 
-                  ? 'bg-slate-600 cursor-not-allowed opacity-80 shadow-none' 
-                  : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 hover:scale-105 shadow-[0_0_20px_rgba(220,38,38,0.5)] grayscale disabled:grayscale'
-                }
-              `}
-            >
-              {remainingPrizeCount === 0 ? (
-                <span className="flex items-center"><X className="w-6 h-6 mr-2"/> 已抽完</span>
-              ) : (
-                <>
-                  <Play className="w-8 h-8 mr-3 fill-current" />
-                  <span>
-                    {!currentPrize ? "請選擇獎項" : `抽出 ${Math.min(actualDrawCount, eligibleCandidates.length || 1)} 位`}
-                  </span>
-                </>
-              )}
-            </button>
+            {currentPrize && remainingPrizeCount === 0 ? (
+              <button
+                onClick={handleRedraw}
+                className="group relative inline-flex items-center justify-center px-8 py-4 text-2xl font-bold text-white transition-all duration-200 rounded-full focus:outline-none shadow-lg bg-slate-600 hover:bg-slate-500 hover:scale-105"
+              >
+                <span className="flex items-center"><X className="w-6 h-6 mr-2"/> 已抽完（點擊重抽）</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleStartDraw}
+                disabled={!currentPrize || eligibleCandidates.length === 0}
+                className="group relative inline-flex items-center justify-center px-8 py-4 text-2xl font-bold text-white transition-all duration-200 rounded-full focus:outline-none shadow-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 hover:scale-105 shadow-[0_0_20px_rgba(220,38,38,0.5)] disabled:grayscale disabled:cursor-not-allowed"
+              >
+                <Play className="w-8 h-8 mr-3 fill-current" />
+                <span>
+                  {!currentPrize ? "請選擇獎項" : `抽出 ${Math.min(actualDrawCount, eligibleCandidates.length || 1)} 位`}
+                </span>
+              </button>
+            )}
             
             {/* Bonus Button (Only appears when sold out) */}
             {currentPrize && remainingPrizeCount === 0 && (
