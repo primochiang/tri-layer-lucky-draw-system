@@ -7,15 +7,17 @@ interface SlotMachineProps {
   isDrawing: boolean;
   onDrawComplete: (winners: Participant[]) => void;
   drawCount: number;
+  drawnWinners: Participant[];
 }
 
-export const SlotMachine: React.FC<SlotMachineProps> = ({ 
-  candidates, 
-  isDrawing, 
+export const SlotMachine: React.FC<SlotMachineProps> = ({
+  candidates,
+  isDrawing,
   onDrawComplete,
-  drawCount 
+  drawCount,
+  drawnWinners
 }) => {
-  const [displayNames, setDisplayNames] = useState<string[]>(Array(drawCount).fill("準備中..."));
+  const [displayNames, setDisplayNames] = useState<string[]>([]);
   const intervalRef = useRef<number | null>(null);
 
   // Handle the animation loop
@@ -28,7 +30,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
           return candidates[randomIndex].name;
         });
         setDisplayNames(randomPicks);
-      }, 50); // Speed of shuffle
+      }, 50);
     } else {
       // Stop shuffling
       if (intervalRef.current) {
@@ -42,23 +44,12 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
     };
   }, [isDrawing, candidates, drawCount]);
 
-  // Handle the completion (Logic calculation happens here effectively)
+  // When drawnWinners changes (draw completed), display actual winners
   useEffect(() => {
-    if (!isDrawing && intervalRef.current === null && candidates.length > 0) {
-       // This effect triggers when 'isDrawing' goes from true to false (stopped by parent)
-       // OR initially. We need to handle the "Stopping" phase specifically.
-       // However, the parent controls the logic. The parent calls setIsDrawing(false) 
-       // AND calculates winners. 
-       // This component is purely visual in this architecture if the parent passes the winners.
-       
-       // BUT, to keep the animation sync, usually the parent passes "isDrawing" 
-       // and when it stops, we expect the Parent to have already decided the winners 
-       // or we decide them here. 
-       
-       // Let's adjust: The visual "random" names are just effects.
-       // The actual winners should be displayed immediately when stopped.
+    if (drawnWinners.length > 0 && !isDrawing) {
+      setDisplayNames(drawnWinners.map(w => w.name));
     }
-  }, [isDrawing]);
+  }, [drawnWinners, isDrawing]);
 
 
   // Helper for grid layout based on count
@@ -69,13 +60,22 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
     return "grid-cols-4";
   };
 
+  // Don't render slots if no draw has happened yet and not currently drawing
+  if (!isDrawing && displayNames.length === 0) {
+    return null;
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       <div className={`grid ${getGridClass(drawCount)} gap-4`}>
         {displayNames.map((name, index) => (
-          <div 
+          <div
             key={index}
-            className="bg-white border-4 border-amber-400 rounded-xl p-6 shadow-lg flex items-center justify-center transform transition-transform hover:scale-105"
+            className={`border-4 rounded-xl p-6 shadow-lg flex items-center justify-center transform transition-transform hover:scale-105 ${
+              !isDrawing && drawnWinners.length > 0
+                ? 'bg-amber-50 border-amber-500'
+                : 'bg-white border-amber-400'
+            }`}
           >
             <span className={`font-bold text-slate-800 ${drawCount > 5 ? 'text-xl' : 'text-3xl'} truncate`}>
               {name}
@@ -83,7 +83,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
           </div>
         ))}
       </div>
-      
+
       {isDrawing && (
         <div className="text-center mt-8 text-white text-xl animate-pulse font-bold">
           抽獎進行中...

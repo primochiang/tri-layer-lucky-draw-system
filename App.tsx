@@ -107,8 +107,9 @@ const App: React.FC = () => {
       setCustomTitle(selectedClub || '');
     }
 
-    // Reset prize selection when layer or context changes
+    // Reset prize selection and drawn winners when layer or context changes
     setSelectedPrizeId('');
+    setLastDrawWinners([]);
   }, [currentLayer, selectedZone, selectedClub]);
 
   // Dynamic Prize Loading based on Layer and Context
@@ -136,6 +137,7 @@ const App: React.FC = () => {
 
     setPrizes(newPrizes);
     setSelectedPrizeId('');
+    setLastDrawWinners([]);
   }, [currentLayer, selectedZone, selectedClub, importedPrizeData]);
 
   // Update selectedZone when zones change (e.g. after import)
@@ -152,6 +154,11 @@ const App: React.FC = () => {
         if (clubs.length > 0) setSelectedClub(clubs[0]);
     }
   }, [currentLayer, participants, selectedClub]);
+
+  // Clear drawn winners when prize selection changes
+  useEffect(() => {
+    setLastDrawWinners([]);
+  }, [selectedPrizeId]);
 
   // --- Derived Logic (Prize & Candidates) ---
 
@@ -488,12 +495,13 @@ const App: React.FC = () => {
 
       {/* 2. Slot Machine Area */}
       <div className="w-full mb-10 px-4">
-        <SlotMachine 
-          key={`${currentLayer}-${selectedPrizeId}`} // Force remount to reset display on context switch
-          candidates={eligibleCandidates} 
-          isDrawing={isDrawing} 
+        <SlotMachine
+          key={`${currentLayer}-${selectedPrizeId}`}
+          candidates={eligibleCandidates}
+          isDrawing={isDrawing}
           onDrawComplete={() => {}}
           drawCount={Math.min(actualDrawCount, eligibleCandidates.length > 0 ? eligibleCandidates.length : 1)}
+          drawnWinners={lastDrawWinners}
         />
       </div>
 
