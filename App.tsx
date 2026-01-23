@@ -19,7 +19,7 @@ import {
   Trash2, Settings, Play, X, Menu, Image as ImageIcon, 
   Type, Monitor, ChevronRight, Award, Plus, Minus,
   Maximize, Minimize, LayoutTemplate, AlignVerticalJustifyCenter, AlignHorizontalJustifyStart,
-  Upload, Gift, MessageSquare
+  MessageSquare
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -306,16 +306,6 @@ const App: React.FC = () => {
     setPrizes(prizes.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
-  const handlePrizeImageUpload = (id: string, event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        updatePrize(id, 'image', reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const deletePrize = (id: string) => {
     if (prizes.length <= 1) return;
@@ -353,17 +343,21 @@ const App: React.FC = () => {
         {/* CURRENT PRIZE BANNER */}
         {currentPrize ? (
           <div className="inline-block relative group animate-fade-in-up">
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
+            {/* Prize Name (above box) */}
+            <div className="text-3xl md:text-5xl font-black text-white drop-shadow-md mb-4">
+              {currentPrize.name}
+            </div>
+            <div className="absolute inset-0 top-12 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
             <div className="relative bg-gradient-to-r from-amber-500 to-amber-600 px-12 py-4 rounded-xl shadow-2xl transform transition-transform hover:scale-105 border border-amber-400/30">
               {currentPrize.sponsor && (
-                <div className="text-amber-100 text-sm font-bold uppercase tracking-[0.2em] mb-1">
-                  {currentPrize.sponsorTitle} {currentPrize.sponsor} 敬贈
+                <div className="text-white text-xl md:text-2xl font-bold mb-1">
+                  {currentPrize.sponsorTitle} {currentPrize.sponsor}
                 </div>
               )}
-              <div className="text-4xl md:text-6xl font-black text-white drop-shadow-md">
-                 {currentPrize.name}
+              <div className="text-3xl md:text-5xl font-black text-white drop-shadow-md">
+                 {currentPrize.itemName || currentPrize.name}
               </div>
-              <div className="mt-2 text-amber-100 font-medium">
+              <div className="mt-2 text-amber-100 text-xl md:text-2xl font-semibold">
                  名額：{remainingPrizeCount} / {currentPrize.totalCount}
               </div>
             </div>
@@ -440,42 +434,6 @@ const App: React.FC = () => {
         )}
       </div>
 
-      {/* 4. Prize Display (Image & Names) - Fixed Height */}
-      {currentPrize ? (
-        <div className="mb-16 w-full max-w-lg px-4 animate-fade-in-up">
-           <div className="relative w-full h-[300px] bg-slate-800/40 backdrop-blur-md rounded-2xl border border-slate-700/50 flex flex-col items-center justify-center overflow-hidden p-4 shadow-xl">
-              {currentPrize.image ? (
-                <img 
-                  src={currentPrize.image} 
-                  alt={currentPrize.name} 
-                  className="h-[180px] w-full object-contain mb-2 drop-shadow-lg"
-                />
-              ) : (
-                <div className="h-[180px] w-full flex items-center justify-center text-slate-500 bg-slate-800/50 rounded-lg mb-2 border border-slate-700/30 border-dashed">
-                   <ImageIcon className="w-12 h-12 opacity-20" />
-                </div>
-              )}
-              <div className="w-full text-center mt-2">
-                 <p className="text-2xl font-bold text-amber-400 mt-1 truncate drop-shadow-md">
-                   {currentPrize.itemName || "獎品內容"}
-                 </p>
-              </div>
-              
-              {/* Corner Accent */}
-              <div className="absolute top-0 right-0 p-2 opacity-50">
-                 <Gift className="w-6 h-6 text-slate-600" />
-              </div>
-           </div>
-        </div>
-      ) : (
-        <div className="mb-16 w-full max-w-lg px-4 h-[300px] flex items-center justify-center opacity-30">
-          {/* Empty Placeholder to keep layout spacing if needed, or remove for cleaner look */}
-          <div className="text-slate-500 font-light flex flex-col items-center">
-            <Gift className="w-16 h-16 mb-2" />
-            <span>準備抽獎...</span>
-          </div>
-        </div>
-      )}
 
       {/* 5. Footer Winners List (Only for BOTTOM mode) */}
       {winnersPosition === 'BOTTOM' && (
@@ -790,37 +748,6 @@ const App: React.FC = () => {
                       </div>
                     </div>
                     
-                    {/* Prize Image Uploader */}
-                    <div className="flex items-center gap-2 border-t border-slate-100 pt-2 mt-1">
-                       {prize.image ? (
-                         <div className="relative group w-10 h-10 rounded bg-slate-100 overflow-hidden border border-slate-200 shrink-0">
-                            <img src={prize.image} alt="prize" className="w-full h-full object-cover" />
-                            <button 
-                              onClick={() => updatePrize(prize.id, 'image', undefined)}
-                              className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-white"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                         </div>
-                       ) : (
-                         <div className="w-10 h-10 rounded bg-slate-50 border border-dashed border-slate-300 flex items-center justify-center text-slate-300 shrink-0">
-                           <ImageIcon className="w-5 h-5" />
-                         </div>
-                       )}
-                       
-                       <label className="flex-1 cursor-pointer">
-                          <span className="inline-flex items-center text-xs text-blue-600 hover:text-blue-700 font-medium">
-                            <Upload className="w-3 h-3 mr-1" />
-                            {prize.image ? '更換圖片' : '上傳獎品圖片'}
-                          </span>
-                          <input 
-                            type="file" 
-                            accept="image/*"
-                            hidden
-                            onChange={(e) => handlePrizeImageUpload(prize.id, e)}
-                          />
-                       </label>
-                    </div>
                  </div>
                ))}
              </div>

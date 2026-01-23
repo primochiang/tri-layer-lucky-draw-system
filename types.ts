@@ -30,7 +30,6 @@ export interface PrizeConfig {
   name: string;     // e.g. "頭獎"
   itemName?: string; // e.g. "iPhone 15 Pro"
   totalCount: number;
-  image?: string;   // Base64 string for prize image
   sponsor?: string; // e.g. "P Queenie" - 贊助人
   sponsorTitle?: string; // e.g. "DG" - 贊助人職稱
 }
