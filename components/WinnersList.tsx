@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { WinnerRecord, LayerType } from '../types';
-import { Edit, Check, Trash2, PanelLeft, PanelBottom, QrCode } from 'lucide-react';
+import { Edit, Check, Trash2, PanelLeft, PanelBottom, QrCode, Search } from 'lucide-react';
 
 interface WinnersListProps {
   winners: WinnerRecord[];
@@ -20,11 +20,23 @@ export const WinnersList: React.FC<WinnersListProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showQr, setShowQr] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const winnersUrl = `${window.location.origin}/winners`;
 
-  // Filter winners for the current layer view usually, but displaying all is also good.
-  // Let's filter by current layer to keep context relevant.
-  const layerWinners = winners.filter(w => w.layer === currentLayer).sort((a, b) => b.timestamp - a.timestamp);
+  const layerWinners = winners
+    .filter(w => w.layer === currentLayer)
+    .filter(w => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.trim().toLowerCase();
+      return (
+        w.participantName.toLowerCase().includes(q) ||
+        w.participantClub.toLowerCase().includes(q) ||
+        w.participantZone.toLowerCase().includes(q) ||
+        w.prize.toLowerCase().includes(q) ||
+        (w.prizeItem && w.prizeItem.toLowerCase().includes(q))
+      );
+    })
+    .sort((a, b) => b.timestamp - a.timestamp);
 
   if (layerWinners.length === 0) {
     return (
@@ -94,6 +106,21 @@ export const WinnersList: React.FC<WinnersListProps> = ({
         </div>
       )}
       
+      {variant === 'sidebar' && (
+        <div className="px-3 py-2 border-b border-slate-200 flex-none">
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜尋姓名、社團、獎項..."
+              className="w-full pl-7 pr-2 py-1.5 text-xs rounded border border-slate-200 focus:outline-none focus:border-blue-400 bg-white"
+            />
+          </div>
+        </div>
+      )}
+
       <div className={`overflow-y-auto ${variant === 'default' ? 'max-h-[400px]' : 'flex-1'}`}>
         {variant === 'sidebar' ? (
           <div className="divide-y divide-slate-100 px-3 py-1">
