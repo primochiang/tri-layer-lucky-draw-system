@@ -44,10 +44,14 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
     };
   }, [isDrawing, candidates, drawCount]);
 
-  // When drawnWinners changes (draw completed), display actual winners
+  // Sync display with drawnWinners state
   useEffect(() => {
-    if (drawnWinners.length > 0 && !isDrawing) {
-      setDisplayNames(drawnWinners.map(w => w.name));
+    if (!isDrawing) {
+      if (drawnWinners.length > 0) {
+        setDisplayNames(drawnWinners.map(w => w.name));
+      } else {
+        setDisplayNames([]);
+      }
     }
   }, [drawnWinners, isDrawing]);
 

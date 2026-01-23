@@ -155,10 +155,10 @@ const App: React.FC = () => {
     }
   }, [currentLayer, participants, selectedClub]);
 
-  // Clear drawn winners when prize selection changes
+  // Clear drawn winners when prize or draw mode changes
   useEffect(() => {
     setLastDrawWinners([]);
-  }, [selectedPrizeId]);
+  }, [selectedPrizeId, drawMode, customBatchSize]);
 
   // --- Derived Logic (Prize & Candidates) ---
 
