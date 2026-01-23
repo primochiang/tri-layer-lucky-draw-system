@@ -63,16 +63,14 @@ export const WinnersList: React.FC<WinnersListProps> = ({
       <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center flex-none">
         <h3 className="font-bold text-slate-700">本層級得獎名單 ({layerWinners.length})</h3>
         <div className="flex items-center gap-2">
-          {variant === 'default' && (
-            <button
-              type="button"
-              onClick={() => setShowQr(!showQr)}
-              className={`p-1.5 rounded transition-colors ${showQr ? 'bg-amber-100 text-amber-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'}`}
-              title="顯示 QR Code"
-            >
-              <QrCode className="w-4 h-4" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setShowQr(!showQr)}
+            className={`p-1.5 rounded transition-colors ${showQr ? 'bg-amber-100 text-amber-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'}`}
+            title="顯示 QR Code"
+          >
+            <QrCode className="w-4 h-4" />
+          </button>
           {onTogglePosition && (
             <button
               type="button"
@@ -96,10 +94,10 @@ export const WinnersList: React.FC<WinnersListProps> = ({
       </div>
 
       {/* QR Code Panel */}
-      {showQr && variant === 'default' && (
-        <div className="p-4 bg-amber-50 border-b border-amber-100 flex items-center justify-center gap-4">
-          <QRCodeSVG value={winnersUrl} size={96} bgColor="#fffbeb" fgColor="#1e293b" />
-          <div className="text-sm text-amber-800">
+      {showQr && (
+        <div className={`bg-amber-50 border-b border-amber-100 flex items-center justify-center flex-none ${variant === 'sidebar' ? 'flex-col gap-2 p-3' : 'flex-row gap-4 p-4'}`}>
+          <QRCodeSVG value={winnersUrl} size={variant === 'sidebar' ? 80 : 96} bgColor="#fffbeb" fgColor="#1e293b" />
+          <div className={`text-amber-800 ${variant === 'sidebar' ? 'text-center text-xs' : 'text-sm'}`}>
             <div className="font-bold mb-1">掃碼查詢中獎名單</div>
             <div className="text-xs text-amber-600 break-all">{winnersUrl}</div>
           </div>

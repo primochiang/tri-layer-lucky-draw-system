@@ -7,7 +7,10 @@ import {
   getClubs,
   getFlatClubPrizes,
   getFlatZonePrizes,
-  getFlatDistrictPrizes
+  getFlatDistrictPrizes,
+  ALL_CLUB_PRIZES,
+  ALL_ZONE_OFFICER_PRIZES,
+  DISTRICT_PRIZES
 } from './constants';
 import { LayerSelector } from './components/LayerSelector';
 import { SlotMachine } from './components/SlotMachine';
@@ -18,8 +21,10 @@ import { DanmakuOverlay } from './components/DanmakuOverlay';
 import { ImportPanel } from './components/ImportPanel';
 import { useMessages } from './hooks/useMessages';
 import { useWinners } from './hooks/useWinners';
+import { usePrizes } from './hooks/usePrizes';
+import { useParticipants } from './hooks/useParticipants';
 import { getEligibleParticipants, drawWinners } from './services/lotteryService';
-import { buildPrizeGetters } from './services/importService';
+import { buildPrizeGetters, deriveZoneClubMapping } from './services/importService';
 import confetti from 'canvas-confetti';
 import * as XLSX from 'xlsx';
 import {
@@ -31,8 +36,9 @@ import {
 
 const App: React.FC = () => {
   // --- Core State ---
-  const [participants, setParticipants] = useState<Participant[]>(MOCK_PARTICIPANTS);
+  const { participants, syncParticipants } = useParticipants(MOCK_PARTICIPANTS);
   const { winners, insertWinners, deleteWinner, clearAllWinners } = useWinners();
+  const { syncAllPrizes } = usePrizes();
   const [currentLayer, setCurrentLayer] = useState<LayerType>(LayerType.A);
   const [importedPrizeData, setImportedPrizeData] = useState<ParsedPrizeData | null>(null);
   const [zoneClubs, setZoneClubs] = useState<Record<string, string[]>>(ZONE_CLUBS);
@@ -88,6 +94,13 @@ const App: React.FC = () => {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
+
+  // Derive zoneClubs from participants (handles Supabase-synced data for viewer clients)
+  useEffect(() => {
+    if (participants.length > 0) {
+      setZoneClubs(deriveZoneClubMapping(participants));
+    }
+  }, [participants]);
 
   // Auto-update Title based on context AND Reset Prize Selection
   useEffect(() => {
@@ -333,6 +346,7 @@ const App: React.FC = () => {
       () => {
         const toDelete = winners.filter(w => w.layer === currentLayer);
         toDelete.forEach(w => deleteWinner(w.id));
+        setLastDrawWinners([]);
       }
     );
   };
@@ -364,7 +378,7 @@ const App: React.FC = () => {
 
   // Import Handlers
   const handleParticipantsImported = (newParticipants: Participant[], newZoneClubs: Record<string, string[]>) => {
-    setParticipants(newParticipants);
+    syncParticipants(newParticipants);
     setZoneClubs(newZoneClubs);
     clearAllWinners(); // Clear winners since participant IDs may change
     const newZones = Object.keys(newZoneClubs);
@@ -374,15 +388,53 @@ const App: React.FC = () => {
 
   const handlePrizesImported = (data: ParsedPrizeData) => {
     setImportedPrizeData(data);
+
+    // Sync all imported prizes to Supabase at once
+    const allPrizesToSync: { config: PrizeConfig; layer: LayerType; zone?: string; club?: string }[] = [];
+    const getters = buildPrizeGetters(data);
+
+    // Layer A prizes
+    getters.getFlatDistrictPrizes().forEach(p => {
+      allPrizesToSync.push({ config: p, layer: LayerType.A });
+    });
+
+    // Layer B prizes by zone
+    data.zonePrizes.forEach(zp => {
+      zp.prizes.forEach(p => {
+        allPrizesToSync.push({ config: p, layer: LayerType.B, zone: zp.zone });
+      });
+    });
+
+    // Layer C prizes by club
+    data.clubPrizes.forEach(cp => {
+      cp.prizes.forEach(p => {
+        allPrizesToSync.push({ config: p, layer: LayerType.C, zone: cp.zone, club: cp.club });
+      });
+    });
+
+    syncAllPrizes(allPrizesToSync);
   };
 
   const handleResetToDefaults = () => {
-    setParticipants(MOCK_PARTICIPANTS);
+    syncParticipants(MOCK_PARTICIPANTS);
     setZoneClubs(ZONE_CLUBS);
     setImportedPrizeData(null);
     clearAllWinners();
     setSelectedZone(ZONES[0]);
     setSelectedClub('');
+
+    // Sync default prizes to Supabase
+    const allDefaults: { config: PrizeConfig; layer: LayerType; zone?: string; club?: string }[] = [];
+    DISTRICT_PRIZES.forEach(dp => {
+      dp.prizes.forEach(p => allDefaults.push({ config: p, layer: LayerType.A }));
+    });
+    ALL_ZONE_OFFICER_PRIZES.forEach(zp => {
+      zp.prizes.forEach(p => allDefaults.push({ config: p, layer: LayerType.B, zone: zp.zone }));
+    });
+    ALL_CLUB_PRIZES.forEach(cp => {
+      cp.prizes.forEach(p => allDefaults.push({ config: p, layer: LayerType.C, zone: cp.zone, club: cp.club }));
+    });
+    syncAllPrizes(allDefaults);
   };
 
   // Export Winners to Excel
