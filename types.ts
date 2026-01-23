@@ -57,3 +57,10 @@ export interface ParsedPrizeData {
   zonePrizes: import('./prizes').ZonePrizeConfig[];
   districtPrizes: import('./prizes').DistrictPrizeConfig[];
 }
+
+export interface Message {
+  id: string;
+  nickname: string;
+  content: string;
+  created_at: string;
+}

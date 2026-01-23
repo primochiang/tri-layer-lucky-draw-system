@@ -41,6 +41,16 @@
       .animate-scale-in {
         animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
+
+      /* Danmaku flying animation */
+      @keyframes danmakuFly {
+        from { transform: translateX(100vw); }
+        to { transform: translateX(-100%); }
+      }
+      .danmaku-fly {
+        animation: danmakuFly linear forwards;
+        will-change: transform;
+      }
     </style>
   <script type="importmap">
 {

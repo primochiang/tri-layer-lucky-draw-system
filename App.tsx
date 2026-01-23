@@ -14,7 +14,9 @@ import { SlotMachine } from './components/SlotMachine';
 import { WinnersList } from './components/WinnersList';
 import { Modal } from './components/Modal';
 import { DanmakuSidebar } from './components/DanmakuSidebar';
+import { DanmakuOverlay } from './components/DanmakuOverlay';
 import { ImportPanel } from './components/ImportPanel';
+import { useMessages } from './hooks/useMessages';
 import { getEligibleParticipants, drawWinners } from './services/lotteryService';
 import { buildPrizeGetters } from './services/importService';
 import confetti from 'canvas-confetti';
@@ -41,7 +43,10 @@ const App: React.FC = () => {
   
   // UI State
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(true);
-  const [isDanmakuOpen, setIsDanmakuOpen] = useState<boolean>(false); // Danmaku State
+  const [danmakuMode, setDanmakuMode] = useState<'off' | 'sidebar' | 'overlay'>('off');
+
+  // Real-time messages
+  const { messages, isConnected } = useMessages();
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   
   // Modal State
@@ -572,21 +577,28 @@ const App: React.FC = () => {
       <header className="flex-none flex justify-between items-center p-6 z-20 relative">
           <div className="flex items-center space-x-2 opacity-50">
             <Award className="w-5 h-5 text-amber-400" />
-            <span className="text-sm tracking-widest font-light">一四五分區活動抽獎系統</span>
+            <span className="text-sm tracking-widest font-light">3523地區活動抽獎系統</span>
           </div>
           
           <div className="flex items-center gap-4">
-            {/* Danmaku Toggle */}
+            {/* Danmaku Toggle (off → sidebar → overlay → off) */}
             <button
-               onClick={() => setIsDanmakuOpen(!isDanmakuOpen)}
-               className={`p-2 rounded-full backdrop-blur transition-all shadow-lg border ${
-                 isDanmakuOpen 
-                   ? 'bg-amber-400 text-slate-900 border-amber-400 shadow-amber-400/20' 
+               onClick={() => setDanmakuMode(prev =>
+                 prev === 'off' ? 'sidebar' : prev === 'sidebar' ? 'overlay' : 'off'
+               )}
+               className={`relative p-2 rounded-full backdrop-blur transition-all shadow-lg border ${
+                 danmakuMode !== 'off'
+                   ? 'bg-amber-400 text-slate-900 border-amber-400 shadow-amber-400/20'
                    : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-slate-700'
                }`}
-               title="留言彈幕區"
+               title={danmakuMode === 'off' ? '開啟留言側欄' : danmakuMode === 'sidebar' ? '切換彈幕模式' : '關閉彈幕'}
             >
               <MessageSquare className="w-6 h-6" />
+              {danmakuMode !== 'off' && (
+                <span className="absolute -top-1 -right-1 text-[9px] bg-slate-900 text-amber-400 px-1 rounded-full border border-amber-400/50">
+                  {danmakuMode === 'sidebar' ? '列' : '飄'}
+                </span>
+              )}
             </button>
 
             {/* Fullscreen Toggle */}
@@ -639,14 +651,20 @@ const App: React.FC = () => {
            </div>
         </div>
 
-        {/* Right Panel Danmaku (New) */}
-        {isDanmakuOpen && (
+        {/* Right Panel Danmaku Sidebar */}
+        {danmakuMode === 'sidebar' && (
            <div className="w-full lg:w-[300px] xl:w-[320px] flex-none border-t lg:border-t-0 border-slate-700/50 z-20 order-3 h-1/3 lg:h-full overflow-hidden animate-fade-in">
-             <DanmakuSidebar 
-               isOpen={isDanmakuOpen} 
-               onClose={() => setIsDanmakuOpen(false)} 
+             <DanmakuSidebar
+               messages={messages}
+               isConnected={isConnected}
+               onClose={() => setDanmakuMode('off')}
              />
            </div>
+        )}
+
+        {/* Danmaku Overlay (flying mode) */}
+        {danmakuMode === 'overlay' && (
+          <DanmakuOverlay messages={messages} />
         )}
 
       </main>
