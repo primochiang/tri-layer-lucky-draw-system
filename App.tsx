@@ -17,6 +17,7 @@ import { DanmakuSidebar } from './components/DanmakuSidebar';
 import { DanmakuOverlay } from './components/DanmakuOverlay';
 import { ImportPanel } from './components/ImportPanel';
 import { useMessages } from './hooks/useMessages';
+import { useWinners } from './hooks/useWinners';
 import { getEligibleParticipants, drawWinners } from './services/lotteryService';
 import { buildPrizeGetters } from './services/importService';
 import confetti from 'canvas-confetti';
@@ -31,12 +32,7 @@ import {
 const App: React.FC = () => {
   // --- Core State ---
   const [participants, setParticipants] = useState<Participant[]>(MOCK_PARTICIPANTS);
-  const [winners, setWinners] = useState<WinnerRecord[]>(() => {
-    try {
-      const saved = localStorage.getItem('lotteryWinners');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
-  });
+  const { winners, insertWinners, deleteWinner, clearAllWinners } = useWinners();
   const [currentLayer, setCurrentLayer] = useState<LayerType>(LayerType.A);
   const [importedPrizeData, setImportedPrizeData] = useState<ParsedPrizeData | null>(null);
   const [zoneClubs, setZoneClubs] = useState<Record<string, string[]>>(ZONE_CLUBS);
@@ -83,10 +79,6 @@ const App: React.FC = () => {
 
   // --- Effects ---
 
-  // Persist winners to localStorage
-  useEffect(() => {
-    localStorage.setItem('lotteryWinners', JSON.stringify(winners));
-  }, [winners]);
 
   // Fullscreen listener
   useEffect(() => {
@@ -285,7 +277,7 @@ const App: React.FC = () => {
       context: currentLayer === LayerType.A ? '全體' : filterValue || '未知'
     }));
 
-    setWinners(prev => [...newRecords, ...prev]);
+    insertWinners(newRecords);
 
     confetti({
       particleCount: 200,
@@ -301,14 +293,16 @@ const App: React.FC = () => {
       'confirm',
       '重新抽獎',
       `確定要清除「${currentPrize.name}」的所有得獎紀錄並重新抽獎嗎？`,
-      () => setWinners(prev => prev.filter(w => {
-        if (w.prizeId) return w.prizeId !== currentPrize.id;
-        // Legacy: match by name + layer + context
-        if (w.layer !== currentLayer || w.prize !== currentPrize.name) return true;
-        if (currentLayer === LayerType.B && w.context !== selectedZone) return true;
-        if (currentLayer === LayerType.C && w.context !== selectedClub) return true;
-        return false;
-      }))
+      () => {
+        const toDelete = winners.filter(w => {
+          if (w.prizeId) return w.prizeId === currentPrize.id;
+          if (w.layer !== currentLayer || w.prize !== currentPrize.name) return false;
+          if (currentLayer === LayerType.B && w.context !== selectedZone) return false;
+          if (currentLayer === LayerType.C && w.context !== selectedClub) return false;
+          return true;
+        });
+        toDelete.forEach(w => deleteWinner(w.id));
+      }
     );
   };
 
@@ -333,10 +327,13 @@ const App: React.FC = () => {
 
   const handleResetLayer = () => {
     showModal(
-      'confirm', 
-      '清除確認', 
+      'confirm',
+      '清除確認',
       '確定要清除目前層級的所有得獎名單嗎？此操作無法復原。',
-      () => setWinners(prev => prev.filter(w => w.layer !== currentLayer))
+      () => {
+        const toDelete = winners.filter(w => w.layer === currentLayer);
+        toDelete.forEach(w => deleteWinner(w.id));
+      }
     );
   };
 
@@ -345,7 +342,7 @@ const App: React.FC = () => {
       'confirm',
       '刪除得獎紀錄',
       '確定要刪除此筆得獎紀錄嗎？刪除後名額將自動歸還，需要重新抽獎。',
-      () => setWinners(prev => prev.filter(w => w.id !== recordId))
+      () => deleteWinner(recordId)
     );
   };
 
@@ -369,7 +366,7 @@ const App: React.FC = () => {
   const handleParticipantsImported = (newParticipants: Participant[], newZoneClubs: Record<string, string[]>) => {
     setParticipants(newParticipants);
     setZoneClubs(newZoneClubs);
-    setWinners([]); // Clear winners since participant IDs may change
+    clearAllWinners(); // Clear winners since participant IDs may change
     const newZones = Object.keys(newZoneClubs);
     if (newZones.length > 0) setSelectedZone(newZones[0]);
     setSelectedClub('');
@@ -383,7 +380,7 @@ const App: React.FC = () => {
     setParticipants(MOCK_PARTICIPANTS);
     setZoneClubs(ZONE_CLUBS);
     setImportedPrizeData(null);
-    setWinners([]);
+    clearAllWinners();
     setSelectedZone(ZONES[0]);
     setSelectedClub('');
   };

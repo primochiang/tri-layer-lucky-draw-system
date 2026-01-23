@@ -9,7 +9,8 @@ export function useMessages() {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // Load initial messages (most recent 50)
+    if (!supabase) return;
+
     const loadInitial = async () => {
       const { data, error } = await supabase
         .from('messages')
@@ -24,7 +25,6 @@ export function useMessages() {
 
     loadInitial();
 
-    // Subscribe to new inserts
     const channel = supabase
       .channel('messages-realtime')
       .on(
@@ -51,6 +51,7 @@ export function useMessages() {
   }, []);
 
   const sendMessage = useCallback(async (nickname: string, content: string) => {
+    if (!supabase) return false;
     const { error } = await supabase
       .from('messages')
       .insert({ nickname, content });
@@ -58,11 +59,14 @@ export function useMessages() {
   }, []);
 
   const clearMessages = useCallback(async () => {
+    if (!supabase) return false;
     const { error } = await supabase
       .from('messages')
       .delete()
-      .gte('id', '00000000-0000-0000-0000-000000000000');
-    if (!error) {
+      .gte('created_at', '1970-01-01T00:00:00.000Z');
+    if (error) {
+      console.error('Failed to clear messages from Supabase:', error);
+    } else {
       setMessages([]);
     }
     return !error;

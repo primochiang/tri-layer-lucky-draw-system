@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import { AudiencePage } from './pages/AudiencePage';
+import { WinnersPage } from './pages/WinnersPage';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -16,6 +17,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/audience" element={<AudiencePage />} />
+        <Route path="/winners" element={<WinnersPage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

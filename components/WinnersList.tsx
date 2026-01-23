@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { WinnerRecord, LayerType } from '../types';
-import { Edit, Check, Trash2, PanelLeft, PanelBottom } from 'lucide-react';
+import { Edit, Check, Trash2, PanelLeft, PanelBottom, QrCode } from 'lucide-react';
 
 interface WinnersListProps {
   winners: WinnerRecord[];
@@ -18,6 +19,8 @@ export const WinnersList: React.FC<WinnersListProps> = ({
   onTogglePosition
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [showQr, setShowQr] = useState(false);
+  const winnersUrl = `${window.location.origin}/winners`;
 
   // Filter winners for the current layer view usually, but displaying all is also good.
   // Let's filter by current layer to keep context relevant.
@@ -48,8 +51,18 @@ export const WinnersList: React.FC<WinnersListProps> = ({
       <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center flex-none">
         <h3 className="font-bold text-slate-700">本層級得獎名單 ({layerWinners.length})</h3>
         <div className="flex items-center gap-2">
+          {variant === 'default' && (
+            <button
+              type="button"
+              onClick={() => setShowQr(!showQr)}
+              className={`p-1.5 rounded transition-colors ${showQr ? 'bg-amber-100 text-amber-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'}`}
+              title="顯示 QR Code"
+            >
+              <QrCode className="w-4 h-4" />
+            </button>
+          )}
           {onTogglePosition && (
-            <button 
+            <button
               type="button"
               onClick={onTogglePosition}
               className="p-1.5 rounded transition-colors text-slate-400 hover:text-slate-600 hover:bg-slate-200"
@@ -59,7 +72,7 @@ export const WinnersList: React.FC<WinnersListProps> = ({
             </button>
           )}
           <span className="text-xs text-slate-500 bg-slate-200 px-2 py-1 rounded hidden sm:inline-block">最新在前</span>
-          <button 
+          <button
             type="button"
             onClick={() => setIsEditing(!isEditing)}
             className={`p-1.5 rounded transition-colors ${isEditing ? 'bg-blue-100 text-blue-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'}`}
@@ -69,6 +82,17 @@ export const WinnersList: React.FC<WinnersListProps> = ({
           </button>
         </div>
       </div>
+
+      {/* QR Code Panel */}
+      {showQr && variant === 'default' && (
+        <div className="p-4 bg-amber-50 border-b border-amber-100 flex items-center justify-center gap-4">
+          <QRCodeSVG value={winnersUrl} size={96} bgColor="#fffbeb" fgColor="#1e293b" />
+          <div className="text-sm text-amber-800">
+            <div className="font-bold mb-1">掃碼查詢中獎名單</div>
+            <div className="text-xs text-amber-600 break-all">{winnersUrl}</div>
+          </div>
+        </div>
+      )}
       
       <div className={`overflow-y-auto ${variant === 'default' ? 'max-h-[400px]' : 'flex-1'}`}>
         {variant === 'sidebar' ? (
