@@ -38,7 +38,7 @@ const App: React.FC = () => {
   // --- Core State ---
   const { participants, syncParticipants } = useParticipants(MOCK_PARTICIPANTS);
   const { winners, insertWinners, deleteWinner, clearAllWinners } = useWinners();
-  const { syncAllPrizes } = usePrizes();
+  const { allPrizes: supabasePrizes, getPrizes: getSupabasePrizes, syncAllPrizes } = usePrizes();
   const [currentLayer, setCurrentLayer] = useState<LayerType>(LayerType.A);
   const [importedPrizeData, setImportedPrizeData] = useState<ParsedPrizeData | null>(null);
   const [zoneClubs, setZoneClubs] = useState<Record<string, string[]>>(ZONE_CLUBS);
@@ -105,7 +105,7 @@ const App: React.FC = () => {
   // Auto-update Title based on context AND Reset Prize Selection
   useEffect(() => {
     if (currentLayer === LayerType.A) {
-      setCustomTitle('3523地區');
+      setCustomTitle('3523地區獎');
     } else if (currentLayer === LayerType.B) {
       setCustomTitle(selectedZone);
     } else if (currentLayer === LayerType.C) {
@@ -130,6 +130,15 @@ const App: React.FC = () => {
       } else if (currentLayer === LayerType.C && selectedClub) {
         newPrizes = getters.getFlatClubPrizes(selectedClub);
       }
+    } else if (supabasePrizes.length > 0) {
+      // Use prizes from Supabase when no local import data
+      if (currentLayer === LayerType.A) {
+        newPrizes = getSupabasePrizes(LayerType.A);
+      } else if (currentLayer === LayerType.B) {
+        newPrizes = getSupabasePrizes(LayerType.B, selectedZone);
+      } else if (currentLayer === LayerType.C && selectedClub) {
+        newPrizes = getSupabasePrizes(LayerType.C, undefined, selectedClub);
+      }
     } else {
       if (currentLayer === LayerType.A) {
         newPrizes = getFlatDistrictPrizes();
@@ -143,7 +152,7 @@ const App: React.FC = () => {
     setPrizes(newPrizes);
     setSelectedPrizeId('');
     setLastDrawWinners([]);
-  }, [currentLayer, selectedZone, selectedClub, importedPrizeData]);
+  }, [currentLayer, selectedZone, selectedClub, importedPrizeData, supabasePrizes]);
 
   // Update selectedZone when zones change (e.g. after import)
   useEffect(() => {
