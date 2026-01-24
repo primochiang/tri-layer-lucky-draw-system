@@ -164,14 +164,14 @@ function parseClubPrizes(
 
   rows.forEach(({ row, rowNum }) => {
     const zone = String(row['分區'] || '').trim();
-    const club = String(row['社團'] || '').trim();
+    const club = String(row['社團'] || row['社團/職稱'] || '').trim();
     const sponsor = String(row['贊助人'] || '').trim();
     const prizeName = String(row['獎項名稱'] || '').trim();
     const itemName = String(row['獎品內容'] || '').trim();
     const count = parseInt(String(row['數量'] || '0')) || 0;
 
     if (!zone) { errors.push({ row: rowNum, column: '分區', message: '分區為必填' }); return; }
-    if (!club) { errors.push({ row: rowNum, column: '社團', message: '社團為必填' }); return; }
+    if (!club) { errors.push({ row: rowNum, column: '社團', message: '第一階段須填寫社團' }); return; }
 
     const key = `${zone}-${club}`;
     const id = generatePrizeId('c', zone, club, groupMap.get(key)?.prizes.length || 0);
