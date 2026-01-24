@@ -1,16 +1,9 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { LayerType, Participant, WinnerRecord, PrizeConfig, ParsedPrizeData } from './types';
 import {
-  MOCK_PARTICIPANTS,
   ZONES,
   ZONE_CLUBS,
   getClubs,
-  getFlatClubPrizes,
-  getFlatZonePrizes,
-  getFlatDistrictPrizes,
-  ALL_CLUB_PRIZES,
-  ALL_ZONE_OFFICER_PRIZES,
-  DISTRICT_PRIZES
 } from './constants';
 import { LayerSelector } from './components/LayerSelector';
 import { SlotMachine } from './components/SlotMachine';
@@ -36,7 +29,7 @@ import {
 
 const App: React.FC = () => {
   // --- Core State ---
-  const { participants, syncParticipants } = useParticipants(MOCK_PARTICIPANTS);
+  const { participants, syncParticipants } = useParticipants([]);
   const { winners, insertWinners, deleteWinner, clearAllWinners } = useWinners();
   const { allPrizes: supabasePrizes, getPrizes: getSupabasePrizes, syncAllPrizes } = usePrizes();
   const [currentLayer, setCurrentLayer] = useState<LayerType>(LayerType.A);
@@ -69,8 +62,7 @@ const App: React.FC = () => {
   const [selectedClub, setSelectedClub] = useState<string>('');
 
   // --- Prize Management State ---
-  // Initialize with district prizes for Layer A
-  const [prizes, setPrizes] = useState<PrizeConfig[]>(() => getFlatDistrictPrizes());
+  const [prizes, setPrizes] = useState<PrizeConfig[]>([]);
   const [selectedPrizeId, setSelectedPrizeId] = useState<string>(''); // Default to empty
   const [drawMode, setDrawMode] = useState<'ONE' | 'ALL' | 'CUSTOM'>('ONE');
   const [customBatchSize, setCustomBatchSize] = useState<number>(1);
@@ -138,14 +130,6 @@ const App: React.FC = () => {
         newPrizes = getSupabasePrizes(LayerType.B, selectedZone);
       } else if (currentLayer === LayerType.C && selectedClub) {
         newPrizes = getSupabasePrizes(LayerType.C, undefined, selectedClub);
-      }
-    } else {
-      if (currentLayer === LayerType.A) {
-        newPrizes = getFlatDistrictPrizes();
-      } else if (currentLayer === LayerType.B) {
-        newPrizes = getFlatZonePrizes(selectedZone);
-      } else if (currentLayer === LayerType.C && selectedClub) {
-        newPrizes = getFlatClubPrizes(selectedClub);
       }
     }
 
@@ -425,25 +409,13 @@ const App: React.FC = () => {
   };
 
   const handleResetToDefaults = () => {
-    syncParticipants(MOCK_PARTICIPANTS);
+    syncParticipants([]);
     setZoneClubs(ZONE_CLUBS);
     setImportedPrizeData(null);
     clearAllWinners();
     setSelectedZone(ZONES[0]);
     setSelectedClub('');
-
-    // Sync default prizes to Supabase
-    const allDefaults: { config: PrizeConfig; layer: LayerType; zone?: string; club?: string }[] = [];
-    DISTRICT_PRIZES.forEach(dp => {
-      dp.prizes.forEach(p => allDefaults.push({ config: p, layer: LayerType.A }));
-    });
-    ALL_ZONE_OFFICER_PRIZES.forEach(zp => {
-      zp.prizes.forEach(p => allDefaults.push({ config: p, layer: LayerType.B, zone: zp.zone }));
-    });
-    ALL_CLUB_PRIZES.forEach(cp => {
-      cp.prizes.forEach(p => allDefaults.push({ config: p, layer: LayerType.C, zone: cp.zone, club: cp.club }));
-    });
-    syncAllPrizes(allDefaults);
+    syncAllPrizes([]);
   };
 
   // Export Winners to Excel
