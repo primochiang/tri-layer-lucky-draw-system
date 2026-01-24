@@ -8,7 +8,6 @@ interface DbPrizeRow {
   item_name: string;
   total_count: number;
   sponsor: string;
-  sponsor_title: string;
   layer: string;
   zone: string | null;
   club: string | null;
@@ -22,7 +21,6 @@ function dbToConfig(row: DbPrizeRow): PrizeConfig & { layer: string; zone: strin
     itemName: row.item_name || undefined,
     totalCount: row.total_count,
     sponsor: row.sponsor || undefined,
-    sponsorTitle: row.sponsor_title || undefined,
     layer: row.layer,
     zone: row.zone,
     club: row.club,
@@ -130,7 +128,6 @@ export function usePrizes() {
         item_name: p.itemName || '',
         total_count: p.totalCount,
         sponsor: p.sponsor || '',
-        sponsor_title: p.sponsorTitle || '',
         layer,
         zone: zone || null,
         club: club || null,
@@ -180,7 +177,6 @@ export function usePrizes() {
         item_name: p.itemName || '',
         total_count: p.totalCount,
         sponsor: p.sponsor || '',
-        sponsor_title: p.sponsorTitle || '',
         layer,
         zone: zone || null,
         club: club || null,

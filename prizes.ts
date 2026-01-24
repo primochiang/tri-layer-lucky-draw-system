@@ -13,73 +13,73 @@ export const ZONE1_CLUB_PRIZES: ClubPrizeConfig[] = [
   {
     zone: '第一分區',
     club: '南區',
-    sponsor: 'P Queenie',
+    sponsor: 'Queenie',
     prizes: [
-      { id: 'z1-nanqu-1', name: '社長獎', itemName: '紅包 $2,000', totalCount: 3, sponsor: 'Queenie', sponsorTitle: 'P' }
+      { id: 'z1-nanqu-1', name: '社長獎', itemName: '紅包 $2,000', totalCount: 3, sponsor: 'Queenie' }
     ]
   },
   {
     zone: '第一分區',
     club: '逸仙',
-    sponsor: 'P Susan',
+    sponsor: 'Susan',
     prizes: [
-      { id: 'z1-yixian-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 3, sponsor: 'Susan', sponsorTitle: 'P' }
+      { id: 'z1-yixian-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 3, sponsor: 'Susan' }
     ]
   },
   {
     zone: '第一分區',
     club: '逸天',
-    sponsor: 'P Jim',
+    sponsor: 'Jim',
     prizes: [
-      { id: 'z1-yitian-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 1, sponsor: 'Jim', sponsorTitle: 'P' }
+      { id: 'z1-yitian-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 1, sponsor: 'Jim' }
     ]
   },
   {
     zone: '第一分區',
     club: '雲聯網',
-    sponsor: 'P Jennifer',
+    sponsor: 'Jennifer',
     prizes: [
-      { id: 'z1-yunlian-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Jennifer', sponsorTitle: 'P' }
+      { id: 'z1-yunlian-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Jennifer' }
     ]
   },
   {
     zone: '第一分區',
     club: '逸澤',
-    sponsor: 'P Andy',
+    sponsor: 'Andy',
     prizes: [
-      { id: 'z1-yize-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Andy', sponsorTitle: 'P' }
+      { id: 'z1-yize-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Andy' }
     ]
   },
   {
     zone: '第一分區',
     club: '黃埔',
-    sponsor: 'P Alex',
+    sponsor: 'Alex',
     prizes: [
-      { id: 'z1-huangpu-1', name: '社長獎', itemName: '禮品一份', totalCount: 1, sponsor: 'Alex', sponsorTitle: 'P' }
+      { id: 'z1-huangpu-1', name: '社長獎', itemName: '禮品一份', totalCount: 1, sponsor: 'Alex' }
     ]
   },
   {
     zone: '第一分區',
     club: '逸新',
-    sponsor: 'P Sandy',
+    sponsor: 'Sandy',
     prizes: [
-      { id: 'z1-yixin-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 3, sponsor: 'Sandy', sponsorTitle: 'P' }
+      { id: 'z1-yixin-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 3, sponsor: 'Sandy' }
     ]
   },
   {
     zone: '第一分區',
     club: '蘭亭鐵馬',
-    sponsor: 'CP Wine',
+    sponsor: 'Wine',
     prizes: [
-      { id: 'z1-lanting-1', name: '社長獎', itemName: '酒 1 瓶', totalCount: 1, sponsor: 'Wine', sponsorTitle: 'CP' }
+      { id: 'z1-lanting-1', name: '社長獎', itemName: '酒 1 瓶', totalCount: 1, sponsor: 'Wine' }
     ]
   },
   {
     zone: '第一分區',
     club: '銀河',
-    sponsor: 'P',
+    sponsor: '',
     prizes: [
-      { id: 'z1-yinhe-1', name: '社長獎', itemName: '待確認', totalCount: 0, sponsor: '', sponsorTitle: 'P' }
+      { id: 'z1-yinhe-1', name: '社長獎', itemName: '待確認', totalCount: 0, sponsor: '' }
     ]
   }
 ];
@@ -89,65 +89,65 @@ export const ZONE4_CLUB_PRIZES: ClubPrizeConfig[] = [
   {
     zone: '第四分區',
     club: '南欣',
-    sponsor: 'P William',
+    sponsor: 'William',
     prizes: [
-      { id: 'z4-nanxin-1', name: '社長獎', itemName: 'Edenred即享卡 $1,000', totalCount: 2, sponsor: 'William', sponsorTitle: 'P' }
+      { id: 'z4-nanxin-1', name: '社長獎', itemName: 'Edenred即享卡 $1,000', totalCount: 2, sponsor: 'William' }
     ]
   },
   {
     zone: '第四分區',
     club: '松山',
-    sponsor: 'P MB',
+    sponsor: 'MB',
     prizes: [
-      { id: 'z4-songshan-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'MB', sponsorTitle: 'P' }
+      { id: 'z4-songshan-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'MB' }
     ]
   },
   {
     zone: '第四分區',
     club: '民生',
-    sponsor: 'P Dawson',
+    sponsor: 'Dawson',
     prizes: [
-      { id: 'z4-minsheng-1', name: '社長獎', itemName: '年節禮盒', totalCount: 2, sponsor: 'Dawson', sponsorTitle: 'P' }
+      { id: 'z4-minsheng-1', name: '社長獎', itemName: '年節禮盒', totalCount: 2, sponsor: 'Dawson' }
     ]
   },
   {
     zone: '第四分區',
     club: '松青',
-    sponsor: 'P Tony',
+    sponsor: 'Tony',
     prizes: [
-      { id: 'z4-songqing-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Tony', sponsorTitle: 'P' }
+      { id: 'z4-songqing-1', name: '社長獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Tony' }
     ]
   },
   {
     zone: '第四分區',
     club: '政愛',
-    sponsor: 'P Alex',
+    sponsor: 'Alex',
     prizes: [
-      { id: 'z4-zhengai-1', name: '社長獎', itemName: '連建興聯名款紅酒', totalCount: 2, sponsor: 'Alex', sponsorTitle: 'P' }
+      { id: 'z4-zhengai-1', name: '社長獎', itemName: '連建興聯名款紅酒', totalCount: 2, sponsor: 'Alex' }
     ]
   },
   {
     zone: '第四分區',
     club: '添愛',
-    sponsor: 'P Jerry',
+    sponsor: 'Jerry',
     prizes: [
-      { id: 'z4-tianai-1', name: '社長獎', itemName: '威士忌酒', totalCount: 2, sponsor: 'Jerry', sponsorTitle: 'P' }
+      { id: 'z4-tianai-1', name: '社長獎', itemName: '威士忌酒', totalCount: 2, sponsor: 'Jerry' }
     ]
   },
   {
     zone: '第四分區',
     club: '泰愛',
-    sponsor: 'P Lian',
+    sponsor: 'Lian',
     prizes: [
-      { id: 'z4-taiai-1', name: '社長獎', itemName: '陶板屋套餐 (2張/份)', totalCount: 2, sponsor: 'Lian', sponsorTitle: 'P' }
+      { id: 'z4-taiai-1', name: '社長獎', itemName: '陶板屋套餐 (2張/份)', totalCount: 2, sponsor: 'Lian' }
     ]
   },
   {
     zone: '第四分區',
     club: '文化',
-    sponsor: 'P Sky',
+    sponsor: 'Sky',
     prizes: [
-      { id: 'z4-wenhua-1', name: '社長獎', itemName: '連建興聯名款紅酒', totalCount: 2, sponsor: 'Sky', sponsorTitle: 'P' }
+      { id: 'z4-wenhua-1', name: '社長獎', itemName: '連建興聯名款紅酒', totalCount: 2, sponsor: 'Sky' }
     ]
   }
 ];
@@ -157,33 +157,33 @@ export const ZONE5_CLUB_PRIZES: ClubPrizeConfig[] = [
   {
     zone: '第五分區',
     club: '府門',
-    sponsor: 'P Card',
+    sponsor: 'Card',
     prizes: [
-      { id: 'z5-fumen-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Card', sponsorTitle: 'P' }
+      { id: 'z5-fumen-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Card' }
     ]
   },
   {
     zone: '第五分區',
     club: '南陽',
-    sponsor: 'P Michael',
+    sponsor: 'Michael',
     prizes: [
-      { id: 'z5-nanyang-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Michael', sponsorTitle: 'P' }
+      { id: 'z5-nanyang-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Michael' }
     ]
   },
   {
     zone: '第五分區',
     club: '明星',
-    sponsor: 'P Mandy',
+    sponsor: 'Mandy',
     prizes: [
-      { id: 'z5-mingxing-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Mandy', sponsorTitle: 'P' }
+      { id: 'z5-mingxing-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Mandy' }
     ]
   },
   {
     zone: '第五分區',
     club: '風雲',
-    sponsor: 'P Reis',
+    sponsor: 'Reis',
     prizes: [
-      { id: 'z5-fengyun-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Reis', sponsorTitle: 'P' }
+      { id: 'z5-fengyun-1', name: '社長獎', itemName: '紅包 $1,500', totalCount: 3, sponsor: 'Reis' }
     ]
   }
 ];
@@ -209,7 +209,7 @@ export const ZONE1_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'CGS',
     sponsor: 'Catherine',
     prizes: [
-      { id: 'z1-cgs-1', name: '分區長官獎', itemName: '日式健走杖 (價值$3,500)', totalCount: 1, sponsor: 'Catherine', sponsorTitle: 'CGS' }
+      { id: 'z1-cgs-1', name: '分區長官獎', itemName: '日式健走杖 (價值$3,500)', totalCount: 1, sponsor: 'Catherine' }
     ]
   },
   {
@@ -217,7 +217,7 @@ export const ZONE1_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'DAG',
     sponsor: 'Edward',
     prizes: [
-      { id: 'z1-dag-1', name: '分區長官獎', itemName: '醫療級靈芝多醣體面膜 (價值$900/盒)', totalCount: 3, sponsor: 'Edward', sponsorTitle: 'DAG' }
+      { id: 'z1-dag-1', name: '分區長官獎', itemName: '醫療級靈芝多醣體面膜 (價值$900/盒)', totalCount: 3, sponsor: 'Edward' }
     ]
   },
   {
@@ -225,8 +225,8 @@ export const ZONE1_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'AG',
     sponsor: 'Amrita',
     prizes: [
-      { id: 'z1-ag-1', name: '分區長官獎', itemName: '紅蔘精華飲 (價值$3,210/盒)', totalCount: 10, sponsor: 'Amrita', sponsorTitle: 'AG' },
-      { id: 'z1-ag-2', name: '分區長官獎', itemName: '紅包 $3,000', totalCount: 2, sponsor: 'Amrita', sponsorTitle: 'AG' }
+      { id: 'z1-ag-1', name: '分區長官獎', itemName: '紅蔘精華飲 (價值$3,210/盒)', totalCount: 10, sponsor: 'Amrita' },
+      { id: 'z1-ag-2', name: '分區長官獎', itemName: '紅包 $3,000', totalCount: 2, sponsor: 'Amrita' }
     ]
   }
 ];
@@ -237,7 +237,7 @@ export const ZONE4_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'CGS',
     sponsor: 'Olin',
     prizes: [
-      { id: 'z4-cgs-1', name: '分區長官獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Olin', sponsorTitle: 'CGS' }
+      { id: 'z4-cgs-1', name: '分區長官獎', itemName: '紅包 $1,000', totalCount: 2, sponsor: 'Olin' }
     ]
   },
   {
@@ -245,7 +245,7 @@ export const ZONE4_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'DAG',
     sponsor: 'Daniel',
     prizes: [
-      { id: 'z4-dag-1', name: '分區長官獎', itemName: '央行馬年紀念幣', totalCount: 20, sponsor: 'Daniel', sponsorTitle: 'DAG' }
+      { id: 'z4-dag-1', name: '分區長官獎', itemName: '央行馬年紀念幣', totalCount: 20, sponsor: 'Daniel' }
     ]
   },
   {
@@ -253,7 +253,7 @@ export const ZONE4_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'AG',
     sponsor: 'Fruit',
     prizes: [
-      { id: 'z4-ag-1', name: '分區長官獎', itemName: '紐西蘭空運櫻桃', totalCount: 10, sponsor: 'Fruit', sponsorTitle: 'AG' }
+      { id: 'z4-ag-1', name: '分區長官獎', itemName: '紐西蘭空運櫻桃', totalCount: 10, sponsor: 'Fruit' }
     ]
   }
 ];
@@ -264,7 +264,7 @@ export const ZONE5_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'CGS',
     sponsor: 'Michelle',
     prizes: [
-      { id: 'z5-cgs-1', name: '分區長官獎', itemName: '紅包 $2,000', totalCount: 3, sponsor: 'Michelle', sponsorTitle: 'CGS' }
+      { id: 'z5-cgs-1', name: '分區長官獎', itemName: '紅包 $2,000', totalCount: 3, sponsor: 'Michelle' }
     ]
   },
   {
@@ -272,7 +272,7 @@ export const ZONE5_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'DAG',
     sponsor: 'Archi',
     prizes: [
-      { id: 'z5-dag-1', name: '分區長官獎', itemName: '紅包 $2,000', totalCount: 3, sponsor: 'Archi', sponsorTitle: 'DAG' }
+      { id: 'z5-dag-1', name: '分區長官獎', itemName: '紅包 $2,000', totalCount: 3, sponsor: 'Archi' }
     ]
   },
   {
@@ -280,9 +280,9 @@ export const ZONE5_OFFICER_PRIZES: ZonePrizeConfig[] = [
     title: 'AG',
     sponsor: 'Peter',
     prizes: [
-      { id: 'z5-ag-1', name: '分區長官獎', itemName: '茶葉禮盒', totalCount: 20, sponsor: 'Peter', sponsorTitle: 'AG' },
-      { id: 'z5-ag-2', name: '分區長官獎', itemName: '紅包 $3,000', totalCount: 1, sponsor: 'Peter', sponsorTitle: 'AG' },
-      { id: 'z5-ag-3', name: '分區長官獎', itemName: '紅包 $2,000', totalCount: 1, sponsor: 'Peter', sponsorTitle: 'AG' }
+      { id: 'z5-ag-1', name: '分區長官獎', itemName: '茶葉禮盒', totalCount: 20, sponsor: 'Peter' },
+      { id: 'z5-ag-2', name: '分區長官獎', itemName: '紅包 $3,000', totalCount: 1, sponsor: 'Peter' },
+      { id: 'z5-ag-3', name: '分區長官獎', itemName: '紅包 $2,000', totalCount: 1, sponsor: 'Peter' }
     ]
   }
 ];
@@ -306,49 +306,49 @@ export const DISTRICT_PRIZES: DistrictPrizeConfig[] = [
     title: 'DG',
     sponsor: 'Jenny',
     prizes: [
-      { id: 'dist-dg-1', name: '總監獎', itemName: '皇家禮炮威士忌酒 21年份', totalCount: 1, sponsor: 'Jenny', sponsorTitle: 'DG' }
+      { id: 'dist-dg-1', name: '總監獎', itemName: '皇家禮炮威士忌酒 21年份', totalCount: 1, sponsor: 'Jenny' }
     ]
   },
   {
     title: 'DGE',
     sponsor: 'Jessy',
     prizes: [
-      { id: 'dist-dge-1', name: '總監當選人獎', itemName: '曼谷來回機票', totalCount: 1, sponsor: 'Jessy', sponsorTitle: 'DGE' }
+      { id: 'dist-dge-1', name: '總監當選人獎', itemName: '曼谷來回機票', totalCount: 1, sponsor: 'Jessy' }
     ]
   },
   {
     title: 'DGN',
     sponsor: 'Joy',
     prizes: [
-      { id: 'dist-dgn-1', name: '總監提名人獎', itemName: '紅包 $3,000', totalCount: 1, sponsor: 'Joy', sponsorTitle: 'DGN' }
+      { id: 'dist-dgn-1', name: '總監提名人獎', itemName: '紅包 $3,000', totalCount: 1, sponsor: 'Joy' }
     ]
   },
   {
     title: 'DGND',
     sponsor: 'Y.C',
     prizes: [
-      { id: 'dist-dgnd-1', name: '指定總監提名人獎', itemName: '禮品 1 份', totalCount: 1, sponsor: 'Y.C', sponsorTitle: 'DGND' }
+      { id: 'dist-dgnd-1', name: '指定總監提名人獎', itemName: '禮品 1 份', totalCount: 1, sponsor: 'Y.C' }
     ]
   },
   {
     title: 'DS',
     sponsor: 'Steven',
     prizes: [
-      { id: 'dist-ds-1', name: '地區秘書長獎', itemName: '家樂福禮券 $5,000', totalCount: 1, sponsor: 'Steven', sponsorTitle: 'DS' }
+      { id: 'dist-ds-1', name: '地區秘書長獎', itemName: '家樂福禮券 $5,000', totalCount: 1, sponsor: 'Steven' }
     ]
   },
   {
     title: 'PDG',
     sponsor: 'Jack Chu',
     prizes: [
-      { id: 'dist-pdg-1', name: '前總監獎', itemName: '紅包 $3,000', totalCount: 1, sponsor: 'Jack Chu', sponsorTitle: 'PDG' }
+      { id: 'dist-pdg-1', name: '前總監獎', itemName: '紅包 $3,000', totalCount: 1, sponsor: 'Jack Chu' }
     ]
   },
   {
     title: 'PDG',
     sponsor: 'Tiffany',
     prizes: [
-      { id: 'dist-pdg-2', name: '前總監獎', itemName: '絲巾一條', totalCount: 1, sponsor: 'Tiffany', sponsorTitle: 'PDG' }
+      { id: 'dist-pdg-2', name: '前總監獎', itemName: '絲巾一條', totalCount: 1, sponsor: 'Tiffany' }
     ]
   }
 ];

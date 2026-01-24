@@ -531,7 +531,7 @@ const App: React.FC = () => {
             <div className="relative bg-gradient-to-r from-amber-500 to-amber-600 px-12 py-4 rounded-xl shadow-2xl transform transition-transform hover:scale-105 border border-amber-400/30">
               {currentPrize.sponsor && (
                 <div className="text-3xl font-bold text-white mb-1">
-                  {currentPrize.sponsorTitle} {currentPrize.sponsor}
+                  {currentPrize.sponsor}
                 </div>
               )}
               <div className="text-4xl font-black text-white drop-shadow-md">
@@ -823,13 +823,13 @@ const App: React.FC = () => {
                   <option value="">-- 請選擇獎項 --</option>
                   {prizes.map(p => (
                     <option key={p.id} value={p.id}>
-                      {p.name} - {p.sponsorTitle} {p.sponsor} (共 {p.totalCount} 名)
+                      {p.name} - {p.sponsor} (共 {p.totalCount} 名)
                     </option>
                   ))}
                 </select>
                 {currentPrize && (
                   <div className="mt-2 p-2 bg-amber-100/50 rounded text-xs text-amber-800">
-                    <div className="font-bold">贊助人：{currentPrize.sponsorTitle} {currentPrize.sponsor}</div>
+                    <div className="font-bold">贊助人：{currentPrize.sponsor}</div>
                     <div>獎品：{currentPrize.itemName}</div>
                     <div className="flex justify-between mt-1">
                       <span>剩餘: {remainingPrizeCount}</span>

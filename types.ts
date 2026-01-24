@@ -31,8 +31,7 @@ export interface PrizeConfig {
   name: string;     // e.g. "頭獎"
   itemName?: string; // e.g. "iPhone 15 Pro"
   totalCount: number;
-  sponsor?: string; // e.g. "P Queenie" - 贊助人
-  sponsorTitle?: string; // e.g. "DG" - 贊助人職稱
+  sponsor?: string; // 贊助人（寫什麼顯示什麼）
 }
 
 export interface DrawConfig {

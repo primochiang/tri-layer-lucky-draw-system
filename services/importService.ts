@@ -181,8 +181,7 @@ function parseClubPrizes(
       name: prizeName || '社長獎',
       itemName: itemName || undefined,
       totalCount: count,
-      sponsor: sponsor || undefined,
-      sponsorTitle: 'P'
+      sponsor: sponsor || undefined
     };
 
     if (groupMap.has(key)) {
@@ -191,7 +190,7 @@ function parseClubPrizes(
       groupMap.set(key, {
         zone,
         club,
-        sponsor: `P ${sponsor}`,
+        sponsor,
         prizes: [prize]
       });
     }
@@ -224,8 +223,7 @@ function parseZonePrizes(
       name: prizeName || '分區長官獎',
       itemName: itemName || undefined,
       totalCount: count,
-      sponsor: sponsor || undefined,
-      sponsorTitle: title || undefined
+      sponsor: sponsor || undefined
     };
 
     if (groupMap.has(key)) {
@@ -264,8 +262,7 @@ function parseDistrictPrizes(
       name: prizeName || '特別獎',
       itemName: itemName || undefined,
       totalCount: count,
-      sponsor: sponsor || undefined,
-      sponsorTitle: title || undefined
+      sponsor: sponsor || undefined
     };
 
     if (groupMap.has(key)) {
