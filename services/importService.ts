@@ -84,7 +84,7 @@ export const deriveZoneClubMapping = (participants: Participant[]): Record<strin
 
 /**
  * Parse prizes from an xlsx file.
- * Expected columns: 階段, 分區, 社團/職稱, 贊助人, 獎項名稱, 獎品內容, 數量
+ * Expected columns: 階段, 分區, 社團, 贊助人, 獎項名稱, 獎品內容, 數量
  */
 export const parsePrizesFile = async (file: File): Promise<ImportResult<ParsedPrizeData>> => {
   const errors: ImportError[] = [];
@@ -164,14 +164,14 @@ function parseClubPrizes(
 
   rows.forEach(({ row, rowNum }) => {
     const zone = String(row['分區'] || '').trim();
-    const club = String(row['社團/職稱'] || '').trim();
+    const club = String(row['社團'] || '').trim();
     const sponsor = String(row['贊助人'] || '').trim();
     const prizeName = String(row['獎項名稱'] || '').trim();
     const itemName = String(row['獎品內容'] || '').trim();
     const count = parseInt(String(row['數量'] || '0')) || 0;
 
     if (!zone) { errors.push({ row: rowNum, column: '分區', message: '分區為必填' }); return; }
-    if (!club) { errors.push({ row: rowNum, column: '社團/職稱', message: '社團/職稱為必填' }); return; }
+    if (!club) { errors.push({ row: rowNum, column: '社團', message: '社團為必填' }); return; }
 
     const key = `${zone}-${club}`;
     const id = generatePrizeId('c', zone, club, groupMap.get(key)?.prizes.length || 0);
@@ -207,7 +207,6 @@ function parseZonePrizes(
 
   rows.forEach(({ row, rowNum }) => {
     const zone = String(row['分區'] || '').trim();
-    const title = String(row['社團/職稱'] || '').trim();
     const sponsor = String(row['贊助人'] || '').trim();
     const prizeName = String(row['獎項名稱'] || '').trim();
     const itemName = String(row['獎品內容'] || '').trim();
@@ -215,8 +214,8 @@ function parseZonePrizes(
 
     if (!zone) { errors.push({ row: rowNum, column: '分區', message: '分區為必填' }); return; }
 
-    const key = `${zone}-${title}-${sponsor}`;
-    const id = generatePrizeId('z', zone, title, groupMap.get(key)?.prizes.length || 0);
+    const key = `${zone}-${sponsor}`;
+    const id = generatePrizeId('z', zone, sponsor, groupMap.get(key)?.prizes.length || 0);
 
     const prize: PrizeConfig = {
       id,
@@ -231,7 +230,7 @@ function parseZonePrizes(
     } else {
       groupMap.set(key, {
         zone,
-        title: title || '',
+        title: '',
         sponsor: sponsor || '',
         prizes: [prize]
       });
@@ -248,14 +247,13 @@ function parseDistrictPrizes(
   const groupMap = new Map<string, DistrictPrizeConfig>();
 
   rows.forEach(({ row }) => {
-    const title = String(row['社團/職稱'] || '').trim();
     const sponsor = String(row['贊助人'] || '').trim();
     const prizeName = String(row['獎項名稱'] || '').trim();
     const itemName = String(row['獎品內容'] || '').trim();
     const count = parseInt(String(row['數量'] || '0')) || 0;
 
-    const key = `${title}-${sponsor}`;
-    const id = generatePrizeId('d', title, sponsor, groupMap.get(key)?.prizes.length || 0);
+    const key = sponsor;
+    const id = generatePrizeId('d', sponsor, groupMap.get(key)?.prizes.length || 0);
 
     const prize: PrizeConfig = {
       id,
@@ -269,7 +267,7 @@ function parseDistrictPrizes(
       groupMap.get(key)!.prizes.push(prize);
     } else {
       groupMap.set(key, {
-        title: title || '',
+        title: '',
         sponsor: sponsor || '',
         prizes: [prize]
       });
@@ -329,9 +327,9 @@ export const generateParticipantsTemplate = (): Blob => {
 export const generatePrizesTemplate = (): Blob => {
   const wb = XLSX.utils.book_new();
   const data = [
-    { '階段': '第一階段', '分區': '第一分區', '社團/職稱': '南區社', '贊助人': 'Queenie', '獎項名稱': '社長獎', '獎品內容': '紅包 $2,000', '數量': 3 },
-    { '階段': '第二階段', '分區': '第一分區', '社團/職稱': 'CGS', '贊助人': 'Catherine', '獎項名稱': '分區長官獎', '獎品內容': '日式健走杖', '數量': 1 },
-    { '階段': '第三階段', '分區': '地區', '社團/職稱': 'DG', '贊助人': 'Jenny', '獎項名稱': '總監獎', '獎品內容': '皇家禮炮威士忌酒', '數量': 1 },
+    { '階段': '第一階段', '分區': '第一分區', '社團': '南區社', '贊助人': 'Queenie', '獎項名稱': '社長獎', '獎品內容': '紅包 $2,000', '數量': 3 },
+    { '階段': '第二階段', '分區': '第一分區', '社團': '', '贊助人': 'Catherine', '獎項名稱': '分區長官獎', '獎品內容': '日式健走杖', '數量': 1 },
+    { '階段': '第三階段', '分區': '', '社團': '', '贊助人': 'Jenny', '獎項名稱': '總監獎', '獎品內容': '皇家禮炮威士忌酒', '數量': 1 },
   ];
   const ws = XLSX.utils.json_to_sheet(data);
   XLSX.utils.book_append_sheet(wb, ws, '獎項清單');

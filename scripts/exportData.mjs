@@ -63,7 +63,7 @@ for (const p of CLUB_PRIZES) {
   prizes.push({
     '階段': '第一階段',
     '分區': p.zone,
-    '社團/職稱': p.club,
+    '社團': p.club,
     '贊助人': p.sponsor,
     '獎項名稱': p.name,
     '獎品內容': p.item,
@@ -91,7 +91,7 @@ for (const p of ZONE_PRIZES) {
   prizes.push({
     '階段': '第二階段',
     '分區': p.zone,
-    '社團/職稱': p.title,
+    '社團': '',
     '贊助人': p.sponsor,
     '獎項名稱': p.name,
     '獎品內容': p.item,
@@ -114,7 +114,7 @@ for (const p of DISTRICT_PRIZES) {
   prizes.push({
     '階段': '第三階段',
     '分區': '地區',
-    '社團/職稱': p.title,
+    '社團': '',
     '贊助人': p.sponsor,
     '獎項名稱': p.name,
     '獎品內容': p.item,
